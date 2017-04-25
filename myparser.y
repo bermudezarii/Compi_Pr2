@@ -1,194 +1,438 @@
 %{
 /* fichero instrucciones.y */
 #include <stdio.h>
+#include <stdlib.h>
 %}
 
 
-%token KEYWORD INTEGER CONSTANT OPERATOR LITERAL IDENTIFIER PUNCTUATOR 
-%start instrucciones
 
+%token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
+%token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
+%token AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
+%token SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN
+%token XOR_ASSIGN OR_ASSIGN 
+%token TYPEDEF EXTERN STATIC AUTO REGISTER
+%token CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE CONST VOLATILE VOID
+%token STRUCT UNION ENUM ELLIPSIS
+%token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
+%token COMMENT INTEGER PUNTUACTOR OPERATOR INCLUDE DEFINE ENDLINE
+
+
+%start translationUnit
 
 %%
 
-translationUnid : externalDeclaration*
-; 
+primaryExpression
+	: IDENTIFIER
+	| CONSTANT
+	| STRING_LITERAL
+	| '(' expression ')'
+	;
 
-externalDeclaration :  functionDef 
-	| declaration 
-; 
+postfixExpression
+	: primaryExpression
+	| postfixExpression '[' expression ']'
+	| postfixExpression '(' ')'
+	| postfixExpression '(' argumentExpressionList ')'
+	| postfixExpression '.' IDENTIFIER
+	| postfixExpression '*' IDENTIFIER
+	| postfixExpression INC_OP
+	| postfixExpression DEC_OP
+	;
 
-functionDef : '{'declarationSpec'}'* declarator '{'declaration'}'* compoundStatement
-; 
+argumentExpressionList
+	: assignmentExpression
+	| argumentExpressionList ',' assignmentExpression
+	;
 
-storageClassSpec : auto
-	| register
-	| static 
-	| extern 
-	| typedef
-; 
+unaryExpression
+	: postfixExpression
+	| INC_OP unaryExpression
+	| DEC_OP unaryExpression
+	| unaryOperator castExpression
+	| SIZEOF unaryExpression
+	| SIZEOF '(' typeName ')'
+	;
 
+unaryOperator
+	: '&'
+	| '*'
+	| '+'
+	| '-'
+	| '~'
+	| '!'
+	;
 
-typeSpec : void 
-	| char 
-	| short  
-	| int
-	| long
-	| float
-	| double
-	| signed
-	| unsigned
-	| structOrUnionSpec
-	| enumSpec
-	| typeDefName
+castExpression
+	: unaryExpression
+	| '(' typeName ')' castExpression
+	;
 
-; 
+multiplicativeExpression
+	: castExpression
+	| multiplicativeExpression '*' castExpression
+	| multiplicativeExpression '/' castExpression
+	| multiplicativeExpression '%' castExpression
+	;
 
-structOrUnionSpec : structOrUnion identifier  '{' '{'structDeclaration'}'+ '}'
-	| structOrUnion '{' '{'structDeclaration'}'+ '}' 
-	| structOrUnion identifier  
-;
-
-structOrUnion : struct 
-	| union 
-; 
-
-
-structDeclaration : '{'specifierQualifier'}'* structDeclaratorList
-;
-
-structQualifier : typeSpec 
-	| typeQualifier 
-; 
-
-
-structDeclaratorList : structDeclarator 
-	| structDeclaratorList ',' structDeclarator
-;
-
-structDeclarator : declarator 
-	| declarator ':' constantExpression 
-	| ':' constantExpression 
-;
-
-declarator : '{'pointer'}'? directDeclarator 
-; 
-
-pointer : '*' '{'typeQualifier'}'* '{'pointer'}'? 
-; 
-
-typeQualifier : const
-	| volatile
-; 
-
-
-directDeclarator : indentifier
-	| '(' declarator ')'
-	| directDeclarator '[' '{'constantExpression'}'? ']'
-	| directDeclarator '(' parameterTypeList ')'
-	| directDeclarator '(' '{'indentifier'}'* ')'
-; 
-
-conditionalExpression : logicalOrExpression 
-	| logicalOrExpression '?' expression ':' conditionalExpression
-; 
-
-logicalOrExpression : logicalAndExpression 
-	| logicalOrExpression '|''|' logicalAndExpression 
-; 
- 
-logicalAndExpression : inclusiveOrExpression 
-	| logicalAndExpression '&''&' inclusiveOrExpression 
-; 
-
-
-inclusiveOrExpression : exclusiveOrExpression 
-	| inclusiveOrExpression '|' exclusiveOrExpression 
-; 
-
-
-exclusiveOrExpression : andExpression
-	| exclusiveOrExpression '^' andExpression
-; 
-
-andExpression : equealityExpression 
-	| andExpression '&' equalityExpresssion
-; 
-
-equalityExpression : relationalExpression 
-	| equalityExpression '=''=' relationalExpression 
-	| equalityExpression '!''=' relationalExpression 
-; 
-
-relationalExpression : shiftExpression 
-	| relationalExpression '<' shiftExpression 
-	| relationalExpression '>' shiftExpression 
-	| relationalExpression '<''=' shiftExpression 
-	| relationalExpression '>''=' shiftExpression 
-; 
-
-shiftExpression : additiveExpression 
-	| shiftExpression '<''<' additiveExpression 
-	| shiftExpression '>''>' additiveExpression 
-; 
-
-
-additiveExpression : multiplicativeExpression
+additiveExpression
+	: multiplicativeExpression
 	| additiveExpression '+' multiplicativeExpression
 	| additiveExpression '-' multiplicativeExpression
-;
+	;
+
+shiftExpression
+	: additiveExpression
+	| shiftExpression LEFT_OP additiveExpression
+	| shiftExpression RIGHT_OP additiveExpression
+	;
+
+relationalExpression
+	: shiftExpression
+	| relationalExpression '<' shiftExpression
+	| relationalExpression '>' shiftExpression
+	| relationalExpression LE_OP shiftExpression
+	| relationalExpression GE_OP shiftExpression
+	;
+
+equalityExpression
+	: relationalExpression
+	| equalityExpression EQ_OP relationalExpression
+	| equalityExpression NE_OP relationalExpression
+	;
+
+andExpression
+	: equalityExpression
+	| andExpression '&' equalityExpression
+	;
+
+exclusiveOrExpression
+	: andExpression
+	| exclusiveOrExpression '^' andExpression
+	;
+
+inclusiveOrExpression
+	: exclusiveOrExpression
+	| inclusiveOrExpression '|' exclusiveOrExpression
+	;
+
+logicalAndExpression
+	: inclusiveOrExpression
+	| logicalAndExpression AND_OP inclusiveOrExpression
+	;
+
+logicalOrExpression
+	: logicalAndExpression
+	| logicalOrExpression OR_OP logicalAndExpression
+	;
+
+conditionalExpression
+	: logicalOrExpression
+	| logicalOrExpression '?' expression ':' conditionalExpression
+	;
+
+assignmentExpression
+	: conditionalExpression
+	| unaryExpression assignmentOperator assignmentExpression
+	;
+
+assignmentOperator
+	: '='
+	| MUL_ASSIGN
+	| DIV_ASSIGN
+	| MOD_ASSIGN
+	| ADD_ASSIGN
+	| SUB_ASSIGN
+	| LEFT_ASSIGN
+	| RIGHT_ASSIGN
+	| AND_ASSIGN
+	| XOR_ASSIGN
+	| OR_ASSIGN
+	;
+
+expression
+	: assignmentExpression
+	| expression ',' assignmentExpression
+	;
+
+constantExpression
+	: conditionalExpression
+	;
+
+declaration
+	: declarationSpecifiers ';'
+	| declarationSpecifiers initDeclaratorList ';'
+	;
+
+declarationSpecifiers
+	: storageClassSpecifier
+	| storageClassSpecifier declarationSpecifiers
+	| typeSpecifier
+	| typeSpecifier declarationSpecifiers
+	| typeQualifier
+	| typeQualifier declarationSpecifiers
+	;
+
+initDeclaratorList
+	: initDeclarator
+	| initDeclaratorList ',' initDeclarator
+	;
+
+initDeclarator
+	: declarator
+	| declarator '=' initializer
+	;
+
+storageClassSpecifier
+	: TYPEDEF
+	| EXTERN
+	| STATIC
+	| AUTO
+	| REGISTER
+	;
+
+typeSpecifier
+	: VOID
+	| CHAR
+	| SHORT
+	| INT
+	| LONG
+	| FLOAT
+	| DOUBLE
+	| SIGNED
+	| UNSIGNED
+	| structOrUnionSpecifier
+	| enumSpecifier
+	| IDENTIFIER
+	;
+
+structOrUnionSpecifier
+	: structOrUnion IDENTIFIER '{' structDeclarationList '}'
+	| structOrUnion '{' structDeclarationList '}'
+	| structOrUnion IDENTIFIER
+	;
+
+structOrUnion
+	: STRUCT
+	| UNION
+	;
+
+structDeclarationList
+	: structDeclaration
+	| structDeclarationList structDeclaration
+	;
+
+structDeclaration
+	: specifierQualifierList structDeclaratorList ';'
+	;
+
+specifierQualifierList
+	: typeSpecifier specifierQualifierList
+	| typeSpecifier
+	| typeQualifier specifierQualifierList
+	| typeQualifier
+	;
+
+structDeclaratorList
+	: structDeclarator
+	| structDeclaratorList ',' structDeclarator
+	;
+
+structDeclarator
+	: declarator
+	| ':' constantExpression
+	| declarator ':' constantExpression
+	;
+
+enumSpecifier
+	: ENUM '{' enumeratorList '}'
+	| ENUM IDENTIFIER '{' enumeratorList '}'
+	| ENUM IDENTIFIER
+	;
+
+enumeratorList
+	: enumerator
+	| enumeratorList ',' enumerator
+	;
+
+enumerator
+	: IDENTIFIER
+	| IDENTIFIER '=' constantExpression
+	;
+
+typeQualifier
+	: CONST
+	| VOLATILE
+	;
+
+declarator
+	: pointer directDeclarator
+	| directDeclarator
+	;
+
+directDeclarator
+	: IDENTIFIER
+	| '(' declarator ')'
+	| directDeclarator '[' constantExpression ']'
+	| directDeclarator '[' ']'
+	| directDeclarator '(' parameterTypeList ')'
+	| directDeclarator '(' identifierList ')'
+	| directDeclarator '(' ')'
+	;
+
+pointer
+	: '*'
+	| '*' typeQualifierList
+	| '*' pointer
+	| '*' typeQualifierList pointer
+	;
+
+typeQualifierList
+	: typeQualifier
+	| typeQualifierList typeQualifier
+	;
 
 
+parameterTypeList
+	: parameterList
+	| parameterList ',' ELLIPSIS
+	;
 
-multiplicativeExpression : castExpression 
-	| multiplicativeExpression '*' castExpression 
-	| multiplicativeExpression '/' castExpression 
-	| multiplicativeExpression '%' castExpression 
-; 
+parameterList
+	: parameterDeclaration
+	| parameterList ',' parameterDeclaration
+	;
 
-castExpression : unaryExpression 
-	|'(' typeName ')' castExpression 
-; 
+parameterDeclaration
+	: declarationSpecifiers declarator
+	| declarationSpecifiers abstractDeclarator
+	| declarationSpecifiers
+	;
 
+identifierList
+	: IDENTIFIER
+	| identifierList ',' IDENTIFIER
+	;
 
-unaryExpression : postfixExpression 
-	| '+''+' unaryExpression 
-	| '-''-' unaryExpression 
-	| unaryExpression castExpression 
-	| sizeof unatyExpression
-	| sizeof typeName
-; 
+typeName
+	: specifierQualifierList
+	| specifierQualifierList abstractDeclarator
+	;
 
+abstractDeclarator
+	: pointer
+	| directAbstractDeclarator
+	| pointer directAbstractDeclarator
+	;
 
-postfixExpression : primaryExpression 
-	| postfixExpression '[' expression ']'	
-	| postfixExpression '(' '{'assignmentExpression'}'
-	| postfixExpression '.' identifier 
-	| postfixExpression '-''>' identifier 
-	| postfixExpression '+''+'
-	| postfixExpression '-''-'
-;
+directAbstractDeclarator
+	: '(' abstractDeclarator ')'
+	| '[' ']'
+	| '[' constantExpression ']'
+	| directAbstractDeclarator '[' ']'
+	| directAbstractDeclarator '[' constantExpression ']'
+	| '(' ')'
+	| '(' parameterTypeList ')'
+	| directAbstractDeclarator '(' ')'
+	| directAbstractDeclarator '(' parameterTypeList ')'
+	;
 
+initializer
+	: assignmentExpression
+	| '{' initializerList '}'
+	| '{' initializerList ',' '}'
+	;
 
-primaryExpression : identifier 
-	| constant 
-	| string 
-	| '(' expression ')'
+initializerList
+	: initializer
+	| initializerList ',' initializer
+	;
 
-;
+statement
+	: labeledStatement
+	| compoundStatement
+	| expressionStatement
+	| selectionStatement
+	| iterationStatement
+	| jumpStatement
+	;
+
+labeledStatement
+	: IDENTIFIER ':' statement
+	| CASE constantExpression ':' statement
+	| DEFAULT ':' statement
+	;
+
+compoundStatement
+	: '{' '}'
+	| '{' statementList '}'
+	| '{' declarationList '}'
+	| '{' declarationList statementList '}'
+	;
+
+declarationList
+	: declaration
+	| declarationList declaration
+	;
+
+statementList
+	: statement
+	| statementList statement
+	;
+
+expressionStatement
+	: ';'
+	| expression ';'
+	;
+
+selectionStatement
+	: IF '(' expression ')' statement
+	| IF '(' expression ')' statement ELSE statement
+	| SWITCH '(' expression ')' statement
+	;
+
+iterationStatement
+	: WHILE '(' expression ')' statement
+	| DO statement WHILE '(' expression ')' ';'
+	| FOR '(' expressionStatement expressionStatement ')' statement
+	| FOR '(' expressionStatement expressionStatement expression ')' statement
+	;
+
+jumpStatement
+	: GOTO IDENTIFIER ';'
+	| CONTINUE ';'
+	| BREAK ';'
+	| RETURN ';'
+	| RETURN expression ';'
+	;
+
+translationUnit
+	: externalDeclaration
+	| translationUnit externalDeclaration		{main();}
+	;
+
+externalDeclaration
+	: functionDefinition
+	| declaration
+	;
+
+functionDefinition
+	: declarationSpecifiers declarator declarationList compoundStatement
+	| declarationSpecifiers declarator compoundStatement
+	| declarator declarationList compoundStatement
+	| declarator compoundStatement
+	;
 
 
 %%
+/*
 int yylex(){ 
-	Sólo necesaria si se trabaja sin Flex 
-}
+	//Sólo necesaria si se trabaja sin Flex 
+}*/
 	
-yyerror (s) /* Llamada por yyparse ante un error */
-	char *s;
-{
- printf ("%s\n", s); /* Esta implementación por defecto nos valdrá */
- /* Si no creamos esta función, habrá que enlazar con –ly en el
-momento de compilar para usar una implementación por defecto */
-}
+
+void yyerror(char * s){fprintf(stdeer, "%s\n", s);}
+
 main()
 {
  //Acciones a ejecutar antes del análisis 
