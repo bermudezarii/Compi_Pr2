@@ -67,6 +67,7 @@ int define(int ntoken){
 	char *variable="";	
 	while(ntoken!=ENDLINE){
 		printf("Estoy en el define con:%s\n",yytext);
+	
 		if(strcmp(variable,"")==0 && ntoken==IDENTIFIER){
 			printf("Variable:%s\n",yytext);
 			variable=(char*)malloc(strlen(yytext));

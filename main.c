@@ -8,7 +8,6 @@
 #include "preprocess.c"
 #include "myscanner.c" 
 
-extern int  yyparse();
 extern FILE* archivotmp;
 
 
@@ -41,16 +40,14 @@ int main(int argc, char *argv[])
             preproceso=false;
             tmpfile = fopen("tmpfile.c", "r"); //Se llama a la función del preprocesador con el archivo de entrada
         	yyin = tmpfile; 
-        	//scanner();  	
-            //init_table();
-            yyparse();
+        	scanner();  	
 	    }else{
 	    	printf("Archivo esta nulo\n");
 	    }
         printf("Termino\n");
         fclose(tmpfile);
         fclose(archivoEntrada);
-		//remove("tmpfile.c");    
+		remove("tmpfile.c");    
      }
 
     return 0; 

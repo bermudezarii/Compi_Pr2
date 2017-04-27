@@ -49,7 +49,7 @@ bool existeInclude(char *include)
 
 
 void include(FILE* archivoActual,FILE* archivoTemporal, int ntoken){
-			printf("Entra al include. \n");
+		printf("Entra al include. \n");
 	        char *includeArreglado; //El valor del include sin los ""
             ntoken = nextToken(); //Se obtiene el siguiente token para evaluar 
             /*

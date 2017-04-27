@@ -1,22 +1,22 @@
 %{
-#include "myscanner.h"
-void yyerror(char *);
-int linea = 1;
-int endline;
+//#include "myscanner.h"
+#include "myparser.tab.h"
+void yyerror(char *,char *, int);
+int linea;
 %}
 
-%%
 
+%%
 "auto"			  															return AUTO;
 "break"			  															return BREAK;
 "case"			  															return CASE;
 "char"			  															return CHAR;
 "const"			  															return CONST;
-"continue"	      															return CONTINUE;
+"continue"	      																return CONTINUE;
 "default"		  															return DEFAULT;
 "do"			  															return DO;
 "double"		  															return DOUBLE;
-"else"			  														    return ELSE;
+"else"			  														    	return ELSE;
 "enum"			  															return ENUM;
 "extern"		  															return EXTERN;
 "float"			  															return FLOAT;
@@ -39,79 +39,82 @@ int endline;
 "void"			  															return VOID;
 "volatile"		  															return VOLATILE;
 "while"			  															return WHILE;
-
 [0-9][0-9]*		  															return INTEGER;
+"/*"([^*]|\*+[^*/])*\*+"/"    		        												return COMMENT;
+"//".*$                  		        												return COMMENT;
+0[xX][a-fA-F0-9]+(u|U|l|L)*?	     														return CONSTANT;
+0[0-9]+(u|U|l|L)*?		     														return CONSTANT;
+[0-9]+(u|U|l|L)*?		     														return CONSTANT;
+L?'(\\.|[^\\'])+'	             														return CONSTANT;
+[0-9]+[Ee][+-]?[0-9]+(f|F|l|L)?		 													return CONSTANT;
+[0-9]*"."[0-9]+([Ee][+-]?[0-9]+)?(f|F|l|L)?													return CONSTANT;
+[0-9]+"."[0-9]*([Ee][+-]?[0-9]+)?(f|F|l|L)?													return CONSTANT;
+"{"                       															return PUNTUACTOR;
+"}"                       															return PUNTUACTOR;
+","                       															return PUNTUACTOR;
+"("                       															return PUNTUACTOR;
+")"                       															return PUNTUACTOR;
+"]"                       															return PUNTUACTOR;
+"["                       															return PUNTUACTOR;
+";"                       															return PUNTUACTOR;
+":"                       															return PUNTUACTOR;
 
-"/*"([^*]|\*+[^*/])*\*+"/"    		        								return COMMENT;
-"//".*$                  		        									return COMMENT;
+"!"                       															return OPERATOR;
+"~"                       															return OPERATOR;
+"?"                       															return OPERATOR;
+"^"                       															return OPERATOR;
 
-0[xX][a-fA-F0-9]+(u|U|l|L)*?	     										return CONSTANT;
-0[0-9]+(u|U|l|L)*?		     												return CONSTANT;
-[0-9]+(u|U|l|L)*?		     												return CONSTANT;
-L?'(\\.|[^\\'])+'	             											return CONSTANT;
-[0-9]+[Ee][+-]?[0-9]+(f|F|l|L)?		 										return CONSTANT;
-[0-9]*"."[0-9]+([Ee][+-]?[0-9]+)?(f|F|l|L)?									return CONSTANT;
-[0-9]+"."[0-9]*([Ee][+-]?[0-9]+)?(f|F|l|L)?									return CONSTANT;
+"+"			              														return OPERATOR;
+"-"			              														return OPERATOR;
+"/"			              														return OPERATOR;
+"%"			              														return OPERATOR;
+"*"			              														return OPERATOR;
+"++"			          														return INC_OP;
+"--"			          														return DEC_OP;
+"=="			              														return EQ_OP;
 
-"{"                       													return LEFT_BRACKET;
-"}"                       													return RIGHT_BRACKET;
-","                       													return COMMA;
-"("                       													return LEFT_PARENTHESIS;
-")"                       													return RIGHT_PARENTHESIS;
-"]"                       													return RIGHT_SBRACKET;
-"["                       													return LEFT_SBRACKET;
-";"                       													return SEMICOLON;
-":"                       													return COLON;
-"!"                       													return EXCLAMATION;
-"~"                       													return PRIME;
-"?"                       													return INTERROGATION;
-"^"                       													return UP_ARROW;
-"+"			              													return PLUS;
-"-"			              													return MINUS;
-"/"			              													return DIV;
-"%"			              													return MOD;
-"*"			              													return MUL;
-"++"			          													return INC_OP;
-"--"			          													return DEC_OP;
-"="			              													return EQU;
-"<"			              													return LESS;
-">"			              													return GREATER;
-"<="			          													return LE_OP;
-">="			          													return GE_OP;
-"=="			          													return EQ_OP;
-"!="			          													return NE_OP;
-"+="			          													return ADD_ASSIGN;
-"-="			          													return SUB_ASSIGN;
-"*="			          													return MUL_ASSIGN;
-"/="			          													return DIV_ASSIGN;
-"%="			          													return MOD_ASSIGN;
-"."			              													return DOT;
-"&"			              													return BIT_AND;
-"|"			              													return BIT_OR;
-"->"			          													return PTR_OP;
-"&&"			          													return AND_OP;
-"||"			         													return OR_OP;
-"..."			         													return ELLIPSIS;
-">>="			          													return RIGHT_ASSIGN;
-"<<="			          													return LEFT_ASSIGN;
-"&="			          													return AND_ASSIGN;
-"^="			          													return XOR_ASSIGN;
-"|="			          													return OR_ASSIGN;
-">>"			          													return RIGHT_OP;
-"<<"			          													return LEFT_OP;
+"="																		return OPERATOR; 
+
+"<"			              														return LEFT_OP;
+">"			              														return RIGHT_OP;
+">="																		return GE_OP; 
+"<="			          														return LE_OP;
+"!="			          														return NE_OP;
+
+"+="			          														return ADD_ASSIGN;
+"-="			          														return SUB_ASSIGN;
+"*="			          														return MUL_ASSIGN;
+"/="			          														return DIV_ASSIGN;
+"%="			          														return MOD_ASSIGN;
+"."			              														return OPERATOR;
+"&"			              														return OPERATOR;
+"|"			              														return OPERATOR;
+"->"			          														return OPERATOR;
+
+"&&"			          														return AND_OP;
+"||"			         														return OR_OP;
+"..."			         														return ELLIPSIS;
+">>="			          														return RIGHT_ASSIGN;
+"<<="			          														return LEFT_ASSIGN;
+"&="			          														return AND_ASSIGN;
+"^="			          														return XOR_ASSIGN;
+"|="			          														return OR_ASSIGN;
+
+">>"			          														return OPERATOR;
+"<<"			          														return OPERATOR;
 
 "#include"			  	  													return INCLUDE;
 "#define"			  	  													return DEFINE;
-[a-zA-Z][_a-zA-Z0-9]*|_	          											return IDENTIFIER;
-L?\"(\\.|[^\\"]|\n)*\"         	  											return LITERAL;
-L?\'(\\.|[^\\"]|\n)*\'        	  											return LITERAL;
-\n|\z|\s|\r		 															{linea++;endline=0;/*ignore*/;}
+[a-zA-Z][_a-zA-Z0-9]*|_	          														return IDENTIFIER;
 
+L?\"(\\.|[^\\"]|\n)*\"         	  														return STRING_LITERAL;
+L?\'(\\.|[^\\"]|\n)*\'        	  														return STRING_LITERAL;
+\n|\z|\s		 															return ENDLINE;
+        	                 	  
 
 [ \t\n]
 
-.|[0-9]*[a-zA-Z][_a-zA-Z0-9]*   											yyerror(yytext);
-
+.|[0-9]*[a-zA-Z][_a-zA-Z0-9]*   yyerror("Error léxico con \"%s\", en línea %i.\n",yytext,linea);
 
 %%
 

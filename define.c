@@ -7,7 +7,6 @@
 
 
 extern char* yytext;
-extern int linea;
 
 
 struct defineS defines[100] = {};  //Tabla con las cadenas que representarán a los includes que se encuentren en el programa
@@ -40,6 +39,17 @@ char* constantfolding(char* num, char* operator, char* num2){
 
 }
 
+
+bool esOperador(int ntoken){
+	if(ntoken == OPERATOR || (ntoken>=262 && ntoken<=282)){
+		return true; 
+	}
+	else{
+		return false; 
+	}
+}
+
+
 int existeDefine(char *define) {
     for(int m = 0; m<numDefines; m++)
     {
@@ -63,100 +73,87 @@ int existeDefine(char *define) {
 
 int define(int ntoken){
 	char* identifiers[50000];
-	memset(identifiers,0,sizeof(identifiers));
 	ntoken=nextToken();
 	int position=0;
-	char *variable="";
-	int lineaactual=linea; 	
-	while(lineaactual==linea){
-
+	char *variable="";	
+	while(ntoken!=ENDLINE){
+		printf("Estoy en el define con:%s\n",yytext);
 		if(strcmp(variable,"")==0 && ntoken==IDENTIFIER){
-		
+			printf("Variable:%s\n",yytext);
 			variable=(char*)malloc(strlen(yytext));
 			strcpy(variable,yytext);
-			
-
 		}
 		else if(ntoken==INTEGER && strcmp(variable,"")!= 0 ){
-			printf("Encontro entero\n");
+			printf("Valor1:%s\n",yytext);
 			char *value= (char*) malloc(strlen(yytext));
 			strcpy(value,yytext);
+			
 			ntoken=nextToken();
-			if (ntoken==PLUS ||ntoken==MINUS||ntoken==DIV||ntoken==MUL){
-				printf("Encontro operador\n");
+			if (esOperador(ntoken)){
+				printf("Valor2:%s\n",yytext);
 				char* operator=(char*)malloc(strlen(yytext));
-                strcpy(operator,yytext);
+                		strcpy(operator,yytext);
 				
 				ntoken=nextToken();
 				if(ntoken==INTEGER){;
-					printf("Encontro entero\n");
-		
+					printf("Valor3:%s\n",yytext);
 					char* tmpnum=constantfolding(value,operator,yytext);
 					strcat(identifiers, tmpnum);
 					strcat(identifiers, " ");
-				
 
-
-				}else{
-					
-                    strcat(identifiers, value);
-                    strcat(identifiers, " ");
-                    strcat(identifiers, operator);
-                    strcat(identifiers, " ");
+				}
+				else{
+					printf("Valor4:%s\n",yytext);
+					strcat(identifiers, value);
+					strcat(identifiers, " ");
+					strcat(identifiers, operator);
+					strcat(identifiers, " ");
 		  			strcat(identifiers, yytext);
 		  			strcat(identifiers, " ");
 		  			position++;
-			
-
 
 				}
-			}else{
-			
+			}
+			else{
+				if(strcmp(yytext,"\n")==0){
+					printf("Problema\n");
+				}
+				printf("Valor5:%s\n",yytext);
 				strcat(identifiers, value);
 				strcat(identifiers, " ");
-				if(linea==lineaactual){
-					strcat(identifiers, yytext);
-					strcat(identifiers, " ");
-		  			
-		  		}
+				strcat(identifiers, yytext);
+				strcat(identifiers, " ");
 		  		position++;
-
-
 
 			}
 		}
-		else if(strcmp(variable,"")!=0 && existeDefine(yytext)!=-1){
+		else if(strcmp(variable,"")==1 &&existeDefine(yytext)!=-1){
 
 			char* tmp[50000];
 			strcpy(tmp,defines[existeDefine(yytext)].vDefine);
 			strcat(identifiers,tmp);
 			strcat(identifiers, " ");
-		
 
 		}		
 		else if(strcmp(variable,"")!=0){
-		  printf("Hola\n");
 		  printf("Valor6:%s\n",yytext);
-		  printf("%d\n", existeDefine(yytext));
 		  strcat(identifiers, yytext);
 		  strcat(identifiers, " ");
 		  position++;
-    	 
 		}
-		if(lineaactual==linea){
-		
+		if(strcmp(yytext,"\n")!=0){
 		   ntoken=nextToken();
 		}
 
     }
     
-    printf("Valores: %s\n",identifiers );
+	printf("Sale\n");
     defines[numDefines].palabra = (char*)malloc(strlen(variable));
     defines[numDefines].vDefine = (char*)malloc(strlen(identifiers));
     strcpy(defines[numDefines].palabra ,variable);
     strcpy(defines[numDefines].vDefine,identifiers);
     numDefines++;
 
-	return ntoken;
+	return 0;
 
 }

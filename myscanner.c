@@ -10,7 +10,7 @@ extern int yylex();
 extern int yylineno;
 extern int yyleng;
 extern char* yytext;
-
+extern int linea=1;
 
 
 
@@ -20,6 +20,9 @@ int scanner(void)
     ntoken = nextToken();
 
     while(ntoken) {
+ 		if(ntoken==ENDLINE){
+ 			linea++;
+ 		}
         ntoken = nextToken();
 	   
     }

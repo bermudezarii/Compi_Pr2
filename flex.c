@@ -20,18 +20,16 @@ int nextToken(void){
     return yylex();
 }
 
-void yyerror(char *texto){
-	if(strcmp(texto,"\"syntax error\""))
-  		printf(" Syntax Error in Line : %d : %s\n",linea,texto);
-	else if(preproceso){
-		fputs(texto,archivotmp);
+void yyerror(char *texto,char *simbolo, int linea){
+	if(preproceso){
+		fputs(simbolo,archivotmp);
 		fputs(" ", archivotmp);
 	   
 	}else{
 
-        printf("\"%s\", en línea %i.\n",texto,yylineno);
+        printf(texto,simbolo,linea);
 	}
        
  
 
-}
+};
