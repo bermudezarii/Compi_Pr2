@@ -1,3 +1,4 @@
+
 int main ( int argc , char * argv [ ] ) 
 { 
 if ( argc == 1 ) { 
@@ -28,7 +29,6 @@ printf ( "Archivo esta nulo\n" ) ;
 printf ( "Termino\n" ) ; 
 fclose ( tmpfile ) ; 
 fclose ( archivoEntrada ) ; 
-
 } 
 return 0 ; 
 } 

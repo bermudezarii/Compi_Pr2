@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "myscanner.h"
+#include "parser.tab.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -20,16 +20,18 @@ int nextToken(void){
     return yylex();
 }
 
-void yyerror(char *texto,char *simbolo, int linea){
-	if(preproceso){
-		fputs(simbolo,archivotmp);
+void yyerror(char *texto){
+	if(strcmp(texto,"\"syntax error\""))
+  		printf(" Syntax Error in Line : %d : %s\n",linea,texto);
+	else if(preproceso){
+		fputs(texto,archivotmp);
 		fputs(" ", archivotmp);
 	   
 	}else{
 
-        printf(texto,simbolo,linea);
+        printf("\"%s\", en línea %i.\n",texto,yylineno);
 	}
        
  
 
-};
+}

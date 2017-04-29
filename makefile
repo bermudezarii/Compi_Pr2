@@ -1,2 +1,2 @@
-main: lex.yy.o main.o
-	gcc -w -o myscanner main.o lex.yy.o
+main: lex.yy.o parser.tab.o  main.o 
+	gcc -w -o parser main.o lex.yy.o parser.tab.o
