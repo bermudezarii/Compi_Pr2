@@ -37,9 +37,9 @@ primary_expression
 
 postfix_expression
 	: primary_expression {printf("postfix_expression: primary_expression \n");}
-	| postfix_expression RIGHT_SBRACKET expression LEFT_SBRACKET {printf("postfix_expression: postfix_expression RIGHT_SBRACKET expression LEFT_SBRACKET\n");}
+	| postfix_expression LEFT_SBRACKET expression RIGHT_SBRACKET {printf("postfix_expression: postfix_expression RIGHT_SBRACKET expression LEFT_SBRACKET\n");}
 	| postfix_expression LEFT_PARENTHESIS RIGHT_PARENTHESIS {printf("postfix_expression: postfix_expression LEFT_PARENTHESIS RIGHT_PARENTHESIS\n");}
-	| postfix_expression LEFT_PARENTHESIS argument_expression_list RIGHT_PARENTHESIS {printf("postfix_expression: postfix_expression LEFT_PARENTHESIS argument_expression_list RIGHT_PARENTHESIS\n");}
+	| postfix_expression LEFT_PARENTHESIS argument_expression_list RIGHT_PARENTHESIS {printf("postfix_expression: postfix_expression RIGHT_PARENTHESIS argument_expression_list LEFT_PARENTHESIS\n");}
 	| postfix_expression DOT IDENTIFIER {printf("postfix_expression: postfix_expression DOT IDENTIFIER\n");}
 	| postfix_expression PTR_OP IDENTIFIER {printf("postfix_expression: postfix_expression PTR_OP IDENTIFIER\n");}
 	| postfix_expression INC_OP {printf("postfix_expression: postfix_expression INC_OP\n");}
@@ -281,8 +281,8 @@ declarator
 direct_declarator
 	: IDENTIFIER {printf("direct_declarator: IDENTIFIER\n");}
 	| LEFT_PARENTHESIS declarator RIGHT_PARENTHESIS {printf("direct_declarator: LEFT_PARENTHESIS declarator RIGHT_PARENTHESIS\n");}
-	| direct_declarator LEFT_SBRACKET constant_expression RIGHT_SBRACKET {printf("direct_declarator: direct_declarator RIGHT_SBRACKET constant_expression LEFT_SBRACKET\n");}
-	| direct_declarator LEFT_SBRACKET RIGHT_SBRACKET {printf("direct_declarator: direct_declarator RIGHT_SBRACKET LEFT_SBRACKET\n");}
+	| direct_declarator LEFT_SBRACKET constant_expression RIGHT_SBRACKET {printf("direct_declarator: direct_declarator LEFT_SBRACKET constant_expression RIGHT_SBRACKET\n");}
+	| direct_declarator LEFT_SBRACKET RIGHT_SBRACKET {printf("direct_declarator: direct_declarator LEFT_SBRACKET RIGHT_SBRACKET\n");}
 	| direct_declarator LEFT_PARENTHESIS parameter_type_list RIGHT_PARENTHESIS {printf("direct_declarator: direct_declarator LEFT_PARENTHESIS parameter_type_list RIGHT_PARENTHESIS\n");}
 	| direct_declarator LEFT_PARENTHESIS identifier_list RIGHT_PARENTHESIS {printf("direct_declarator: direct_declarator LEFT_PARENTHESIS identifier_list RIGHT_PARENTHESIS\n");}
 	| direct_declarator LEFT_PARENTHESIS RIGHT_PARENTHESIS {printf("direct_declarator: direct_declarator LEFT_PARENTHESIS RIGHT_PARENTHESIS\n");}
@@ -335,10 +335,10 @@ abstract_declarator
 
 direct_abstract_declarator
 	: LEFT_PARENTHESIS abstract_declarator RIGHT_PARENTHESIS {printf("direct_abstract_declarator: LEFT_PARENTHESIS abstract_declarator RIGHT_PARENTHESIS \n");}
-	| RIGHT_SBRACKET LEFT_SBRACKET {printf("direct_abstract_declarator: RIGHT_SBRACKET LEFT_SBRACKET \n");}
-	| RIGHT_SBRACKET constant_expression LEFT_SBRACKET {printf("direct_abstract_declarator: RIGHT_SBRACKET constant_expression LEFT_SBRACKET\n");}
-	| direct_abstract_declarator RIGHT_SBRACKET LEFT_SBRACKET {printf("direct_abstract_declarator: direct_abstract_declarator RIGHT_SBRACKET LEFT_SBRACKET\n");}
-	| direct_abstract_declarator RIGHT_SBRACKET constant_expression LEFT_SBRACKET {printf("direct_abstract_declarator: direct_abstract_declarator RIGHT_SBRACKET constant_expression LEFT_SBRACKET \n");}
+	| LEFT_SBRACKET RIGHT_SBRACKET {printf("direct_abstract_declarator:  LEFT_SBRACKET RIGHT_SBRACKET \n");}
+	| LEFT_SBRACKET constant_expression RIGHT_SBRACKET {printf("direct_abstract_declarator: LEFT_SBRACKET constant_expression RIGHT_SBRACKET \n");}
+	| direct_abstract_declarator LEFT_SBRACKET RIGHT_SBRACKET {printf("direct_abstract_declarator: direct_abstract_declarator LEFT_SBRACKET RIGHT_SBRACKET\n");}
+	| direct_abstract_declarator LEFT_SBRACKET constant_expression RIGHT_SBRACKET {printf("direct_abstract_declarator: direct_abstract_declarator LEFT_SBRACKET constant_expression RIGHT_SBRACKET \n");}
 	| LEFT_PARENTHESIS RIGHT_PARENTHESIS {printf("direct_abstract_declarator: LEFT_PARENTHESIS RIGHT_PARENTHESIS\n");}
 	| LEFT_PARENTHESIS parameter_type_list RIGHT_PARENTHESIS {printf("direct_abstract_declarator: LEFT_PARENTHESIS parameter_type_list RIGHT_PARENTHESIS \n");}
 	| direct_abstract_declarator LEFT_PARENTHESIS RIGHT_PARENTHESIS {printf("direct_abstract_declarator: direct_abstract_declarator LEFT_PARENTHESIS RIGHT_PARENTHESIS\n");}
