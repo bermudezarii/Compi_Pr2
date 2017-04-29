@@ -11,11 +11,11 @@
 %token COMMENT 
 %token PLUS MINUS DIV MOD MUL 
 %token  EQU LESS GREATER 
-%token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF INTEGER
+%token IDENTIFIER CONSTANT SIZEOF INTEGER
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
 %token SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN
-%token XOR_ASSIGN OR_ASSIGN TYPE_NAME
+%token XOR_ASSIGN OR_ASSIGN 
 
 %token TYPEDEF EXTERN STATIC AUTO REGISTER
 %token CHAR SHORT INT LONG SIGNED UNSIGNED FLOAT DOUBLE CONST VOLATILE VOID
@@ -30,13 +30,13 @@
 primary_expression
 	: IDENTIFIER {printf("primary_expression: INDENTIFIER FINAL\n");}
 	| CONSTANT {printf("primary_expression: CONSTANT FINAL\n");}
-	| COMMENT {printf("COMMENT FINAL\n");}
+	| LITERAL {printf("LITERAL FINAL\n");}
 	| LEFT_PARENTHESIS expression RIGHT_PARENTHESIS {printf("primary_expression: LEFT_PARENTHESIS FINAL expression RIGHT_PARETHESIS\n");}
 	| INTEGER {printf("primary_expression: INTEGER FINAL\n");}
 	;
 
 postfix_expression
-	: primary_expression {printf("postfix_expression: primary_expression \n");}
+	: primary_expression {printf("postfix_expression: primary_expression\n");}
 	| postfix_expression LEFT_SBRACKET expression RIGHT_SBRACKET {printf("postfix_expression: postfix_expression RIGHT_SBRACKET expression LEFT_SBRACKET\n");}
 	| postfix_expression LEFT_PARENTHESIS RIGHT_PARENTHESIS {printf("postfix_expression: postfix_expression LEFT_PARENTHESIS RIGHT_PARENTHESIS\n");}
 	| postfix_expression LEFT_PARENTHESIS argument_expression_list RIGHT_PARENTHESIS {printf("postfix_expression: postfix_expression RIGHT_PARENTHESIS argument_expression_list LEFT_PARENTHESIS\n");}
@@ -211,7 +211,7 @@ type_specifier
 	| UNSIGNED {printf("type_specifier: UNSIGNED\n");}
 	| struct_or_union_specifier {printf("type_specifier: struct_or_union_specifier\n");}
 	| enum_specifier {printf("type_specifier: enum_specifier\n");}
-	| TYPE_NAME {printf("type_specifier: TYPE_NAME\n");}
+	| type_name {printf("type_specifier: TYPE_NAME\n");}
 	;
 
 struct_or_union_specifier
