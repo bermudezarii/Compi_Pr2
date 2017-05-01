@@ -46,12 +46,10 @@ int preprocesador1(FILE* archivoActual,FILE* archivoTemporal){
 
     	}
     	
-    	else if(ntoken != COMMENT){
-    	   
-        	fputs(yytext, archivoTemporal);
-        	fputs(" ", archivoTemporal);
-            ntoken = nextToken();
-    	}else{
+        else{
+            
+            fputs(yytext, archivoTemporal);
+            fputs(" ", archivoTemporal);
             ntoken = nextToken();
         }
     	
