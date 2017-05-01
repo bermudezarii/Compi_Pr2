@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-
+extern int tabs;
 static char espacios[20] = ""; /*String de espacios*/
 int contador = 0; /*Contador es espacios, encargado de ver cuántos espacios dejar*/
 #define espaciosLlave 2
@@ -9,6 +9,18 @@ static char prettyprint[1000] = "";
 static char nuevo[1000][1000];
 static char viejo[1000][1000];
 
+void prettyprintSelect(int value){
+	switch(value){
+		case 0:
+			printf("GNU style\n");		
+		case 1:
+			printf("BSD style\n");
+		case 2:
+			printf("Tipo de Nosotros\n");
+		default:
+			printf("GNU style\n");
+	}
+}
 
 void generadorEspacios(int numero){
 	memset(espacios, 0, sizeof(espacios));

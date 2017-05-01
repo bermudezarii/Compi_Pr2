@@ -14,16 +14,22 @@ extern FILE* archivotmp;
 extern int linea;
 extern char* gramaticas[500000];
 
+
 int main(int argc, char *argv[])
 {    /*
         Se valida que se hayan digitado los archivos de entrada en la terminal
     */
 	
     if(argc == 1){
+        printf("\n                                    **INSTRUCCIONES**\n\n");
         printf("Para el funcionamiento del programa, este va a funcionar con 3 parámetros en donde el tercero es opcional.\n");
         printf("-En donde el primero será la dirección del programa.\n");
-        printf("-En el segundo el tipo de prettyprint que desea.\n");
-        printf("-En el tercero si desea realizar el prepoceso o no, con una \"S\". Tome en cuenta que este es opcional.\n");
+        printf("-En el segundo el tipo de prettyprint que desea. Del 0-2 se escoge el tipo siendo:\n");
+        printf("       -0: GNU style\n");
+        printf("       -1: BSD style\n");
+        printf("       -2: El estilo escogido por nosotros.\n");
+        printf(" Tome en cuenta que por default esta el GNU style en caso de ingresar cualquier otro número.\n");
+        printf("-En el tercero si desea realizar el prepoceso o no, con una \"S\". Tome en cuenta que este es opcional y que por default esta inactivo.\n\n");
 
 
     }
@@ -52,7 +58,7 @@ int main(int argc, char *argv[])
                 yyin = tmpfile; 
             }
 
-        	//scanner();  	
+        	scanner();  	
             //init_table();
             FILE *tmpPretty = fopen("tmpPretty.c", "w");
             archivoEntrada  = fopen(argv[1], "r");
@@ -60,12 +66,14 @@ int main(int argc, char *argv[])
             linea=1;
             memset(gramaticas,0,sizeof(gramaticas));
             yyparse();
+            prettyprintSelect(atoi(argv[2]));
             fclose(tmpfile);
             fclose(archivoEntrada);
-            fclose(tmpPretty); 
+            //fclose(tmpPretty); 
             //remove("tmpfile.c");    
 	    }else{
-	    	printf("El archivo ingresado no existe, verifique que esté bien escrito o bien no ingreso todos los parámetros.\n");
+	    	printf("El archivo ingresado no existe, verifique que esté bien escrito o bien no ingreso todos los parámetros.\n\n");
+            printf("                **Para más información presione escriba ./parser y da ENTER.**\n");
 	    }
 
       
