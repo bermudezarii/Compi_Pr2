@@ -7,13 +7,13 @@
 #include "flex.c"
 #include "preprocess.c"
 #include "myscanner.c" 
-#include "prettyprint.c"
+#include "prettyprint2.c"
 
 extern int  yyparse();
 extern FILE* archivotmp;
 extern int linea;
 extern char* gramaticas[500000];
-
+extern banderaSyntaxError; 
 
 int main(int argc, char *argv[])
 {    /*
@@ -60,14 +60,24 @@ int main(int argc, char *argv[])
 
         	//scanner();  	
             //init_table();
-            FILE *tmpPretty = fopen("tmpPretty.c", "w");
-            archivoEntrada  = fopen(argv[1], "r");
-            prettyprintGNU(tmpPretty, gramaticas); 
+            
+            
             linea=1;
             memset(gramaticas,0,sizeof(gramaticas));
             yyparse();
- 
-            prettyprintSelect(atoi(argv[2]));
+            if(banderaSyntaxError == 0){
+                fclose(archivoEntrada);     
+                archivoEntrada  = fopen(argv[1], "r");
+                yyin = archivoEntrada; 
+                FILE *tmpPretty = fopen("tmpPretty.c", "w");
+                printf("este es gramaticas antes de pretty print:\n%s\n", gramaticas);
+                memset(gramaticas,0,sizeof(gramaticas));
+                prettyprintSelect(atoi(argv[2]), tmpPretty);
+                printf("este es gramaticas despues de pretty print:\n%s\n", gramaticas);
+            }
+            
+            //printf("este es gramaticas:\n%s", gramaticas);
+
             fclose(tmpfile);
             fclose(archivoEntrada);
             //fclose(tmpPretty); 

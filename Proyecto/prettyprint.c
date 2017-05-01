@@ -1,5 +1,16 @@
 #include <stdio.h>
 #include <string.h>
+#include "estructuras.h"
+#include "flex.c"
+#include "preprocess.c"
+#include "myscanner.c" 
+
+extern FILE * yyin;
+extern int yylex();
+extern int yylineno;
+extern int yyleng;
+extern char* yytext;
+
 extern int tabs;
 static char espacios[20] = ""; /*String de espacios*/
 int contador = 0; /*Contador es espacios, encargado de ver cuántos espacios dejar*/
@@ -8,6 +19,8 @@ int contador = 0; /*Contador es espacios, encargado de ver cuántos espacios dej
 static char prettyprint[1000] = "";
 static char nuevo[1000][1000];
 static char viejo[1000][1000];
+
+
 
 void prettyprintSelect(int value){
 	printf("Entro con:%d\n", value );
@@ -27,12 +40,18 @@ void prettyprintSelect(int value){
 	}
 }
 
+
+
 void generadorEspacios(int numero){
 	memset(espacios, 0, sizeof(espacios));
 	for(int i = 1; i <= numero ; i++){
 		strcat(espacios,  " ");
 	}
 }
+
+
+
+
 /*
 void casosEspeciales(char * linea){
 	if(*linea == 'f'){
