@@ -7,6 +7,7 @@
 #include "flex.c"
 #include "preprocess.c"
 #include "myscanner.c" 
+#include "prettyprint.c"
 
 extern int  yyparse();
 extern FILE* archivotmp;
@@ -53,11 +54,15 @@ int main(int argc, char *argv[])
 
         	//scanner();  	
             //init_table();
+            FILE *tmpPretty = fopen("tmpPretty.c", "w");
+            archivoEntrada  = fopen(argv[1], "r");
+            prettyprintGNU(tmpPretty, gramaticas); 
             linea=1;
             memset(gramaticas,0,sizeof(gramaticas));
             yyparse();
             fclose(tmpfile);
             fclose(archivoEntrada);
+            fclose(tmpPretty); 
             //remove("tmpfile.c");    
 	    }else{
 	    	printf("El archivo ingresado no existe, verifique que esté bien escrito o bien no ingreso todos los parámetros.\n");
