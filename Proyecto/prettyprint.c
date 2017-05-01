@@ -10,15 +10,20 @@ static char nuevo[1000][1000];
 static char viejo[1000][1000];
 
 void prettyprintSelect(int value){
+	printf("Entro con:%d\n", value );
 	switch(value){
 		case 0:
-			printf("GNU style\n");		
+			printf("GNU style\n");
+			break;		
 		case 1:
 			printf("BSD style\n");
+			break;
 		case 2:
 			printf("Tipo de Nosotros\n");
+			break;
 		default:
 			printf("GNU style\n");
+			break;
 	}
 }
 

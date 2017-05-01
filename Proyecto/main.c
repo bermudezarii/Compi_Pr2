@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
                 yyin = tmpfile; 
             }
 
-        	scanner();  	
+        	//scanner();  	
             //init_table();
             FILE *tmpPretty = fopen("tmpPretty.c", "w");
             archivoEntrada  = fopen(argv[1], "r");
@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
             linea=1;
             memset(gramaticas,0,sizeof(gramaticas));
             yyparse();
+ 
             prettyprintSelect(atoi(argv[2]));
             fclose(tmpfile);
             fclose(archivoEntrada);
