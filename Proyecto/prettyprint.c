@@ -16,6 +16,50 @@ void generadorEspacios(int numero){
 		strcat(espacios,  " ");
 	}
 }
+/*
+void casosEspeciales(char * linea){
+	if(*linea == 'f'){
+		linea++; 
+		if(*linea == 'o'){
+			linea++;
+			if(*linea == 'r'){
+				printf("reconocer for\n");
+				fputs("for", archivoTemporal);
+				strcat(prettyprint, "for");
+				linea++;
+				while(*linea != ')'){
+					actual[0] = *linea;
+					fputs(actual, archivoTemporal);
+					strcat(prettyprint, actual);
+					linea++; 
+				}
+				fputs(")", archivoTemporal);
+				strcat(prettyprint, ")");
+				
+			}
+			else{				
+				linea--; 							
+				linea--; 							
+				fputs("f", archivoTemporal);
+				strcat(prettyprint, "f");
+			}
+
+		}
+		else{
+				printf("nivel 2\n");							
+				linea--; 							
+				fputs("f", archivoTemporal);
+				strcat(prettyprint, "f");
+		}
+	}
+		 
+	else { 
+
+		fputs(actual, archivoTemporal);
+		strcat(prettyprint, actual);
+	}
+
+}*/
 
 
 /*Función encargada de hacer el pretty print para el estilo GNU*/
@@ -117,22 +161,24 @@ void prettyprintGNU(FILE *archivoTemporal, char *linea){
 							strcat(prettyprint, ")");
 							
 						}
-						else{
-							linea--; 
-							linea--; 
+						else{				
+							linea--; 							
+							linea--; 							
+							fputs("f", archivoTemporal);
+							strcat(prettyprint, "f");
 						}
-						
 
 					}
 					else{
-							linea--; 
-						
-
+							printf("nivel 2\n");							
+							linea--; 							
+							fputs("f", archivoTemporal);
+							strcat(prettyprint, "f");
 					}
 				}
 					 
 				else { 
-					
+
 					fputs(actual, archivoTemporal);
 					strcat(prettyprint, actual);
 				}
