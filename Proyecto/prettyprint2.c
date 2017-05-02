@@ -270,10 +270,10 @@ int prettyprintBSD(FILE *archivoPretty){
           //putPretty(espacios, archivoPretty); 
           }
         /*Cuando se encuentra una llamada a una función (paréntesis) se deja un espacio*/
-        else if (ntoken == LEFT_PARENTHESIS){
-        	putPretty(" ", archivoPretty); /* se le pone el espacio*/
-        	putPretty(yytext, archivoPretty); /*el ( */ 
-        }
+        //else if (ntoken == LEFT_PARENTHESIS){
+        //	putPretty(" ", archivoPretty); /* se le pone el espacio*/
+        //	putPretty(yytext, archivoPretty); /*el ( */ 
+        //}
        	else if (ntoken == RIGHT_BRACKET){
        		contador = contador - 8; /*Se restan dos espacios, porq la llave se pone un poquito antes*/
        		generadorEspacios(contador); /* espacios */ 
