@@ -12,7 +12,6 @@
 extern int  yyparse();
 extern FILE* archivotmp;
 extern int linea;
-extern char* gramaticas[500000];
 extern banderaSyntaxError; 
 
 int main(int argc, char *argv[])
