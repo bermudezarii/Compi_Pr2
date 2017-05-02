@@ -62,14 +62,15 @@ int prettyprintGNU(FILE * archivoPretty){
             endline=1;
       }
 
-        if (ntoken == FOR || ntoken == IF|| ntoken == WHILE){
-          if(ciclo >= 1){
+        if (ntoken == FOR || ntoken == IF|| ntoken == WHILE){ /*este caso toma estas palabras ya que son de los ciclos tramposos*/
+          if(ciclo >= 1){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
             generadorEspacios(contador); 
             putPretty(espacios, archivoPretty); 
           }
-          while(ntoken != RIGHT_PARENTHESIS){
+          while(ntoken != RIGHT_PARENTHESIS){ /* el while es para que vaya metiendo las cosas normal hasta q encuentra )
+           que es el punto crucial, de si va a tener brackets o va a ser tramposo (de una linea)*/ 
             printf("voy por: %s\n", yytext);
-            if (ntoken == LEFT_PARENTHESIS){
+            if (ntoken == LEFT_PARENTHESIS){ /* como esta la regla q antes de un ( hay q poner un espacio*/
               putPretty(" ", archivoPretty);
             }
             putPretty(yytext, archivoPretty); 
@@ -82,7 +83,8 @@ int prettyprintGNU(FILE * archivoPretty){
 
 
 
-          if (ntoken != LEFT_BRACKET){
+          if (ntoken != LEFT_BRACKET){ /* si no tiene brackets, es uno de los tramposos, 
+          entonces solo le pongo los espacios, copio la linea (hasta el semicolon) y seguimos con la vida*/
             printf("entra al ntoken != LEFT_BRACKET\n");
             putPretty("\n", archivoPretty); 
             contador = contador + 4 ; 
@@ -97,7 +99,7 @@ int prettyprintGNU(FILE * archivoPretty){
             contador = contador - 4; 
             putPretty("\n", archivoPretty); 
           }
-          else if (ntoken == LEFT_BRACKET){
+          else if (ntoken == LEFT_BRACKET){ /* si tiene brackets wuuuuu, pongalo y siga como si nada*/
             ciclo = ciclo + 1 ;
             printf("no se porq no entra ahi D:\n");
             contador = contador + 2 ; /*Se suman dos espacios para el GNU style*/ 
@@ -114,7 +116,8 @@ int prettyprintGNU(FILE * archivoPretty){
 
 
         }
-        else if (ntoken == LEFT_BRACKET){
+        else if (ntoken == LEFT_BRACKET){ /* si encuentra un bracket q no implica antes un while, if o for es como 
+        preste atencion, ahora tiene q identar*/
           printf("no se porq no entra ahi D:\n");
           contador = contador + 2 ; /*Se suman dos espacios para el GNU style*/ 
           putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
@@ -131,19 +134,19 @@ int prettyprintGNU(FILE * archivoPretty){
         	putPretty(" ", archivoPretty); /* se le pone el espacio*/
         	putPretty(yytext, archivoPretty); /*el ( */ 
         }
-       	else if (ntoken == RIGHT_BRACKET){
+       	else if (ntoken == RIGHT_BRACKET){ /* encuentro un } esto significa que debo bajarle los espacios*/
        		contador = contador -2; /*Se restan dos espacios, porq la llave se pone un poquito antes*/
        		generadorEspacios(contador); /* espacios */ 
        		putPretty(espacios, archivoPretty);
        		putPretty(yytext, archivoPretty); /* el } */
        		contador = contador-2; /* lo deja bien en identacion para lo que sigue */ 
        		putPretty("\n", archivoPretty); /* salto de linea */ 
-          if(ciclo >=1){
+          if(ciclo >=1){ /* como } cierra un bloque, entonces nos ayuda a entender q salio de un ciclo */
             ciclo = ciclo - 1 ; 
           }
-          
+      
        	}
-       	else if (ntoken == SEMICOLON){
+       	else if (ntoken == SEMICOLON){ /* lee ; y debe dar un salto para seguir*/
        		putPretty(yytext, archivoPretty); 
        		putPretty("\n", archivoPretty); 
       	
@@ -151,16 +154,17 @@ int prettyprintGNU(FILE * archivoPretty){
 
        	//contemplar el if q no trae llaves y el que trae llaves eELSE  EL DO! 
        	//else if (ntoken == CASE || ntoken == DEFAULT){}
-       	else{
-       		if(anterior == SEMICOLON || anterior == RIGHT_BRACKET){
+       	else{ /* el caso final donde copio todo como viene */
+       		if(anterior == SEMICOLON || anterior == RIGHT_BRACKET){ /*si antes habia un semicolon o }, 
+          di tengo q identar porq solo me dejaron en el inicio de la linea*/
        			generadorEspacios(contador); 
        			putPretty(espacios, archivoPretty); 
        		}
-       		putPretty(yytext, archivoPretty); 
+       		putPretty(yytext, archivoPretty); /*pongo la palabra kawai!*/
        		putPretty(" ", archivoPretty); 
        	}
-       	anterior = ntoken;
-       	ntoken = nextToken();
+       	anterior = ntoken; /*guardo el anterior porque me ayuda a verificar ciertas cosas*/
+       	ntoken = nextToken(); /*como el i++ de nuestro ciclo*/
 	   
     }
     printf("asi queda prettyprintprinteado\n%s\n", prettyprint);
