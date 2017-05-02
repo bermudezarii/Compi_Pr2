@@ -16,6 +16,7 @@ static char nuevo[1000][1000];
 static char viejo[1000][1000];
 int ciclo = 0; 
 int banderaDo = 0; 
+int banderaCase = 0; 
 
 
 void prettyprintSelect(int value, FILE * archivoPretty){
@@ -70,7 +71,7 @@ int prettyprintGNU(FILE * archivoPretty){
             banderaDo = 1; 
           }
 
-          if(ciclo >= 1 && anterior != LEFT_BRACKET && anterior != ELSE ){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
+          if((ciclo >= 1 && anterior != LEFT_BRACKET && anterior != ELSE )|| (anterior == RIGHT_BRACKET || anterior == SEMICOLON)){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
             generadorEspacios(contador); 
             putPretty(espacios, archivoPretty); 
           }
@@ -85,14 +86,12 @@ int prettyprintGNU(FILE * archivoPretty){
             putPretty(yytext, archivoPretty); 
             putPretty(" ", archivoPretty); 
             ntoken = nextToken(); 
-          }  
+            }  
           }
 
           putPretty(yytext, archivoPretty); 
           ntoken = nextToken(); 
           printf("token despues de expression: %s \n", yytext);
-
-
 
           if (ntoken != LEFT_BRACKET){ /* si no tiene brackets, es uno de los tramposos, 
           entonces solo le pongo los espacios, copio la linea (hasta el semicolon) y seguimos con la vida*/
@@ -131,13 +130,32 @@ int prettyprintGNU(FILE * archivoPretty){
             generadorEspacios(contador); /*espacios*/ 
             putPretty(espacios, archivoPretty); 
           }
-
-
-
+        }
+        else if (ntoken == CASE){
+          if(anterior != LEFT_BRACKET){
+            printf("entra a que no hay LEFT_BRACKET\n");
+            generadorEspacios(contador); /*espacios*/ 
+            putPretty(espacios, archivoPretty);
+          }
+          banderaCase = 1; 
+          while(ntoken != COLON){
+            putPretty(yytext, archivoPretty); 
+            putPretty(" ", archivoPretty); 
+            ntoken = nextToken(); 
+          }
+          putPretty(yytext, archivoPretty);
+          contador = contador + 4; 
+          putPretty("\n", archivoPretty); 
+          generadorEspacios(contador); /*espacios*/ 
+          putPretty(espacios, archivoPretty); 
+        }
+        else if (ntoken == BREAK){
+          banderaCase = 0 ; 
+          putPretty(yytext, archivoPretty); 
+          contador = contador - 4 ; 
         }
         else if (ntoken == LEFT_BRACKET){ /* si encuentra un bracket q no implica antes un while, if o for es como 
         preste atencion, ahora tiene q identar*/
-          printf("no se porq no entra ahi D:\n");
           contador = contador + 2 ; /*Se suman dos espacios para el GNU style*/ 
           putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
           generadorEspacios(contador);  /*Se colocan los espacios*/
@@ -147,7 +165,7 @@ int prettyprintGNU(FILE * archivoPretty){
           putPretty("\n", archivoPretty);/*Se coloca un salto de línea*/
           generadorEspacios(contador); /*espacios*/ 
           putPretty(espacios, archivoPretty); 
-          }
+        }
         /*Cuando se encuentra una llamada a una función (paréntesis) se deja un espacio*/
         else if (ntoken == LEFT_PARENTHESIS){
         	putPretty(" ", archivoPretty); /* se le pone el espacio*/
@@ -168,7 +186,9 @@ int prettyprintGNU(FILE * archivoPretty){
        	else if (ntoken == SEMICOLON){ /* lee ; y debe dar un salto para seguir*/
        		putPretty(yytext, archivoPretty); 
        		putPretty("\n", archivoPretty); 
-      	
+          if(banderaCase == 1){
+            generadorEspacios(contador); 
+            putPretty(espacios, archivoPretty);  	
        	}
 
        	//contemplar el if q no trae llaves y el que trae llaves eELSE (lo hago cuando este modularizado) EL DO! 
@@ -179,6 +199,7 @@ int prettyprintGNU(FILE * archivoPretty){
        			generadorEspacios(contador); 
        			putPretty(espacios, archivoPretty); 
        		}
+          
        		putPretty(yytext, archivoPretty); /*pongo la palabra kawai!*/
        		putPretty(" ", archivoPretty); 
        	}
@@ -210,6 +231,7 @@ int prettyprintBSD(FILE *archivoPretty){
             if (ntoken == LEFT_PARENTHESIS){
               putPretty(" ", archivoPretty);
             }
+            if
             putPretty(yytext, archivoPretty); 
             putPretty(" ", archivoPretty); 
             ntoken = nextToken(); 
