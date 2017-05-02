@@ -60,8 +60,35 @@ int prettyprintGNU(FILE * archivoPretty){
       if (endline==0){
             endline=1;
       }
-    	printf("voy por: %s\n", yytext);
-        if (ntoken == LEFT_BRACKET){
+
+        if (ntoken == FOR || ntoken == IF|| ntoken == WHILE){
+          while(ntoken != RIGHT_PARENTHESIS){
+            printf("voy por: %s\n", yytext);
+            if (ntoken == LEFT_PARENTHESIS){
+              putPretty(" ", archivoPretty);
+            }
+            putPretty(yytext, archivoPretty); 
+            putPretty(" ", archivoPretty); 
+            ntoken = nextToken(); 
+          }  
+          putPretty(yytext, archivoPretty); 
+          ntoken = nextToken(); 
+          if (ntoken != LEFT_BRACKET){
+            putPretty("\n", archivoPretty); 
+            contador = contador + 4 ; 
+            generadorEspacios(contador); 
+            putPretty(espacios, archivoPretty); 
+            while(ntoken != SEMICOLON){
+              putPretty(yytext, archivoPretty); 
+              putPretty(" ", archivoPretty); 
+              ntoken = nextToken(); 
+            }
+            putPretty(yytext, archivoPretty);
+            contador = contador - 4; 
+            putPretty("\n", archivoPretty); 
+          }
+        }
+        else if (ntoken == LEFT_BRACKET){
           contador = contador + 2 ; /*Se suman dos espacios para el GNU style*/ 
           putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
           generadorEspacios(contador);  /*Se colocan los espacios*/
@@ -90,10 +117,10 @@ int prettyprintGNU(FILE * archivoPretty){
        	else if (ntoken == SEMICOLON){
        		putPretty(yytext, archivoPretty); 
        		putPretty("\n", archivoPretty); 
-      		
+      	
        	}
-       	//else if (ntoken == FOR){}
-       	//else if (ntoken == IF || ntoken == ELSE || ntoken == WHILE || ntoken == DO){} contemplar el if q no trae llaves y el que trae llaves
+
+       	//contemplar el if q no trae llaves y el que trae llaves eELSE  EL DO! 
        	//else if (ntoken == CASE || ntoken == DEFAULT){}
        	else{
        		if(anterior == SEMICOLON){
@@ -109,4 +136,9 @@ int prettyprintGNU(FILE * archivoPretty){
     }
     printf("asi queda prettyprintprinteado\n%s\n", prettyprint);
     return 0;
+}
+
+int prettyprintBSD(){
+
+
 }
