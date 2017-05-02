@@ -62,8 +62,8 @@ int prettyprintGNU(FILE * archivoPretty){
             endline=1;
       }
 
-        if (ntoken == FOR || ntoken == IF|| ntoken == WHILE){ /*este caso toma estas palabras ya que son de los ciclos tramposos*/
-          if(ciclo >= 1){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
+        if (ntoken == FOR || ntoken == IF|| ntoken == WHILE ){ /*este caso toma estas palabras ya que son de los ciclos tramposos*/
+          if(ciclo >= 1 && anterior != LEFT_BRACKET && anterior != ELSE ){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
             generadorEspacios(contador); 
             putPretty(espacios, archivoPretty); 
           }
@@ -152,7 +152,7 @@ int prettyprintGNU(FILE * archivoPretty){
       	
        	}
 
-       	//contemplar el if q no trae llaves y el que trae llaves eELSE  EL DO! 
+       	//contemplar el if q no trae llaves y el que trae llaves eELSE (lo hago cuando este modularizado) EL DO! 
        	//else if (ntoken == CASE || ntoken == DEFAULT){}
        	else{ /* el caso final donde copio todo como viene */
        		if(anterior == SEMICOLON || anterior == RIGHT_BRACKET){ /*si antes habia un semicolon o }, 
