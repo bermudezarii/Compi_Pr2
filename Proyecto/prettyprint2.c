@@ -14,6 +14,7 @@ int contador = 0; /*Contador es espacios, encargado de ver cuántos espacios dej
 static char prettyprint[1000] = "";
 static char nuevo[1000][1000];
 static char viejo[1000][1000];
+int ciclo = 0; 
 
 
 void prettyprintSelect(int value, FILE * archivoPretty){
@@ -62,6 +63,10 @@ int prettyprintGNU(FILE * archivoPretty){
       }
 
         if (ntoken == FOR || ntoken == IF|| ntoken == WHILE){
+          if(ciclo >= 1){
+            generadorEspacios(contador); 
+            putPretty(espacios, archivoPretty); 
+          }
           while(ntoken != RIGHT_PARENTHESIS){
             printf("voy por: %s\n", yytext);
             if (ntoken == LEFT_PARENTHESIS){
@@ -73,7 +78,12 @@ int prettyprintGNU(FILE * archivoPretty){
           }  
           putPretty(yytext, archivoPretty); 
           ntoken = nextToken(); 
+          printf("token despues de expression: %s \n", yytext);
+
+
+
           if (ntoken != LEFT_BRACKET){
+            printf("entra al ntoken != LEFT_BRACKET\n");
             putPretty("\n", archivoPretty); 
             contador = contador + 4 ; 
             generadorEspacios(contador); 
@@ -87,8 +97,25 @@ int prettyprintGNU(FILE * archivoPretty){
             contador = contador - 4; 
             putPretty("\n", archivoPretty); 
           }
+          else if (ntoken == LEFT_BRACKET){
+            ciclo = ciclo + 1 ;
+            printf("no se porq no entra ahi D:\n");
+            contador = contador + 2 ; /*Se suman dos espacios para el GNU style*/ 
+            putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
+            generadorEspacios(contador);  /*Se colocan los espacios*/
+            putPretty(espacios, archivoPretty); 
+            putPretty(yytext, archivoPretty); /*Se coloca la llave que abre*/ 
+            contador = contador + 2;  /*Se suman otros dos espacios para que ya el resto bn identado*/
+            putPretty("\n", archivoPretty);/*Se coloca un salto de línea*/
+            generadorEspacios(contador); /*espacios*/ 
+            putPretty(espacios, archivoPretty); 
+          }
+
+
+
         }
         else if (ntoken == LEFT_BRACKET){
+          printf("no se porq no entra ahi D:\n");
           contador = contador + 2 ; /*Se suman dos espacios para el GNU style*/ 
           putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
           generadorEspacios(contador);  /*Se colocan los espacios*/
@@ -111,8 +138,10 @@ int prettyprintGNU(FILE * archivoPretty){
        		putPretty(yytext, archivoPretty); /* el } */
        		contador = contador-2; /* lo deja bien en identacion para lo que sigue */ 
        		putPretty("\n", archivoPretty); /* salto de linea */ 
-       		generadorEspacios(contador); /*espacios*/ 
-       		putPretty(espacios, archivoPretty);
+          if(ciclo >=1){
+            ciclo = ciclo - 1 ; 
+          }
+          
        	}
        	else if (ntoken == SEMICOLON){
        		putPretty(yytext, archivoPretty); 
@@ -123,7 +152,7 @@ int prettyprintGNU(FILE * archivoPretty){
        	//contemplar el if q no trae llaves y el que trae llaves eELSE  EL DO! 
        	//else if (ntoken == CASE || ntoken == DEFAULT){}
        	else{
-       		if(anterior == SEMICOLON){
+       		if(anterior == SEMICOLON || anterior == RIGHT_BRACKET){
        			generadorEspacios(contador); 
        			putPretty(espacios, archivoPretty); 
        		}

@@ -1,27 +1,15 @@
-i = 1 ;
-i <= numero ;
-i ++ ) 
-  {
-    strcat  (espacios , " " ) ;
-  }
-return 100 ;
-}
-typedef enum 
-{
-RANDOM , IMMEDIATE , SEARCH }
-StrategyType ;
 int main  (int argc , char * argv [ ] ) 
-{
-fopen  ("tmpfile.c" , "w" ) ;
-for  (int i = 1 ;
-i <= numero ;
-i ++ ) 
   {
-    strcat  (espacios , " " ) ;
+    while  ( hola == 1 )
+      {
+        jeje = 2 ;
+        while  ( true )
+          {
+            jejej = 12 ;
+            if  ( ilala >= 34 )
+                yu = tf ;
+          }
+        dfsd = 34 ;
+      }
+    return 100 ;
   }
-return 100 ;
-}
-typedef enum 
-{
-RANDOM , IMMEDIATE , SEARCH }
-StrategyType ;
