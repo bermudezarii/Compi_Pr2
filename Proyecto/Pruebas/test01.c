@@ -1,56 +1,46 @@
+int* siguienteArchivo;
+File * khdfkdsj;
+void include(char*archivoActual,char* archivoTemporal, int ntoken){
+            printf("Entra al include. \n");
+            char *includeArreglado; //El valor del include sin los ""
+            ntoken = nextToken(); //Se obtiene el siguiente token para evaluar 
+            /*
+                Debido a que los define son literales
+            */  
 
-int main(int argc, char *argv[])
-{    /*
-        Se valida que se hayan digitado los archivos de entrada en la terminal
-    */
-    
-    if(argc == 1){
-        printf("Para el funcionamiento del programa, este va a funcionar con 3 parámetros en donde el tercero es opcional.\n");
-        printf("-En donde el primero será la dirección del programa.\n");
-        printf("-En el segundo el tipo de prettyprint que desea.\n");
-        printf("-En el tercero si desea realizar el prepoceso o no, con una \"S\". Tome en cuenta que este es opcional.\n");
+            if(ntoken == 7){      
+                
+                numIncludes++;
+                FILE* siguienteArchivo; //Se creará un nuevo archivo
+                includeArreglado = modificarInclude(yytext); //Se obtiene el include sin ""
+                /*
+                    Si el include es diferente al archivo que lo invocó
+                */
+                if(existeInclude(includeArreglado) == false){                    
+                    includes[numIncludes] = includeArreglado; //Se agrega a la tabla
+                    siguienteArchivo = fopen(includeArreglado, "r"); //Se pone en modo lectura, FALTA: función que quite los "" de un literal
+               
+                    /*
+                        Se le indica a flex cuál es el archivo actual que se está leyendo
+                    */
+                    yyin = siguienteArchivo;                   
+                    preprocesador1(siguienteArchivo,archivoTemporal); //Se llama de nuevo a la función, pero esta vez con el siguiente archivo incluído
+                    fclose(siguienteArchivo);
+                    /*
+                        Después de la llamada recursiva, se borra la inclusión
+                    */
+                    includes[numIncludes] = ""; 
+                    numIncludes--;
+                    yyin =archivoActual; //Se le dice a flex cuál archivo se estará leyendo
 
+                }
+                /*
+                    Si el include es igual al archivo que lo invocó
+                */
 
-    }
-
-    /*
-        En este caso, se llama a las funcionalidades del preprocesador
-    */
-    else{
-        printf("HOLA\n");
-        FILE *archivoEntrada;
-        FILE *tmpfile = fopen("tmpfile.c", "w");
-        archivoEntrada  = fopen(argv[1], "r");
-        archivotmp=tmpfile;
-        /*
-            Se le indica a flex cuál es el archivo actual que se está leyendo
-        */
-        yyin = archivoEntrada; 
-        if(archivoEntrada && argc>=3){
-            if(argc>=4 && strcmp(argv[3],"S")==0){
-                preproceso=true;
-                preprocesador1(archivoEntrada,tmpfile);
-                fclose(tmpfile);
-                preproceso=false;
-                tmpfile = fopen("tmpfile.c", "r"); //Se llama a la función del preprocesador con el archivo de entrada
-                yyin = tmpfile; 
+                else{
+                    printf("Inclusión duplicada de %s", includeArreglado); //Se notifica el error, revisar esta validación
+                }
             }
-
-            //scanner();    
-            //init_table();
-            linea=1;
-            yyparse();
-            fclose(tmpfile);
-            fclose(archivoEntrada);
-            //remove("tmpfile.c");    
-        }else{
-            printf("El archivo ingresado no existe, verifique que esté bien escrito o bien no ingreso todos los parámetros.\n");
-        }
-
-      
-        
-     }
-     printf("Termino\n");
-
-    return 0; 
+            printf("Salio: %d\n",ntoken);
 }

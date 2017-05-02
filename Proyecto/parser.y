@@ -30,7 +30,7 @@
 
 
 primary_expression
-	: IDENTIFIER {printf("%d con %s primary_expression: IDENTIFIER FINAL\n",linea, yytext );}
+	: IDENTIFIER {printf("%d con %s primary_expression: IDENTIFIER FINAL\n",linea, yytext );$$=strdup(yytext);}
 	| CONSTANT {printf("%d con %s  primary_expression: CONSTANT FINAL\n",linea,  yytext );}
 	| LITERAL {printf("%d con %s  LITERAL FINAL\n",linea, yytext );}
 	| LEFT_PARENTHESIS expression RIGHT_PARENTHESIS {printf("%d con %s  primary_expression: LEFT_PARENTHESIS FINAL expression RIGHT_PARETHESIS\n",linea, yytext);}
@@ -42,6 +42,7 @@ postfix_expression
 	| pointer  primary_expression {printf("%d con %s  postfix_expression: pointer primary_expression\n",linea, yytext);}
 	| primary_expression pointer primary_expression {printf("%d con %s  postfix_expression: primary_expression pointer primary_expression \n",linea, yytext );}
 	| postfix_expression LEFT_SBRACKET expression RIGHT_SBRACKET {printf("%d con %s  postfix_expression: postfix_expression RIGHT_SBRACKET expression LEFT_SBRACKET\n",linea, yytext);}
+	| LEFT_BRACKET RIGHT_BRACKET {printf("%d con %s  postfix_expression: postfix_expression RIGHT_SBRACKET expression LEFT_SBRACKET\n",linea, yytext);}
 	| postfix_expression LEFT_PARENTHESIS RIGHT_PARENTHESIS {printf("%d con %s  postfix_expression: postfix_expression LEFT_PARENTHESIS RIGHT_PARENTHESIS\n",linea,yytext);}
 	| postfix_expression LEFT_PARENTHESIS argument_expression_list RIGHT_PARENTHESIS {printf("%d con %s  postfix_expression: postfix_expression RIGHT_PARENTHESIS argument_expression_list LEFT_PARENTHESIS\n",linea, yytext);}
 	| postfix_expression DOT IDENTIFIER {printf("%d con %s  postfix_expression: postfix_expression DOT IDENTIFIER\n",linea, yytext);}
@@ -217,6 +218,7 @@ type_specifier
 	| struct_or_union_specifier {printf("%d con %s  type_specifier: struct_or_union_specifier\n",linea, yytext );}
 	| enum_specifier {printf("%d con %s  type_specifier: enum_specifier\n",linea, yytext );}
 	| type_name {printf("%d con %s  type_specifier: TYPE_NAME\n",linea,yytext);}
+
 	;
 
 struct_or_union_specifier
@@ -269,8 +271,8 @@ enumerator_list
 	;
 
 enumerator
-	: IDENTIFIER {printf("%d con %s  enumerator: IDENTIFIER\n",linea, yytext);}
-	| IDENTIFIER EQU constant_expression {printf("%d con %s  enumerator: IDENTIFIER EQU constant_expression\n",linea,yytext );}
+	: IDENTIFIER {printf("%d con %s  enumerator: IDENTIFIER\n",linea, gramaticas);}
+	| IDENTIFIER EQU constant_expression {printf("%d con %s  enumerator: IDENTIFIER EQU constant_expression\n",linea,gramaticas);}
 	;
 
 type_qualifier
@@ -279,15 +281,16 @@ type_qualifier
 	;
 
 declarator
-	: pointer direct_declarator {printf("%d con %s  declarator: pointer direct_declarator \n",linea, yytext );}
-	| direct_declarator {printf("%d con %s  declarator: direct_declarator\n",linea, yytext );}
-	| direct_declarator pointer {printf("%d con %s  declarator: direct_declarator\n",linea, yytext);}
-	| declarator direct_declarator {printf("%d con %s  declarator: declarator direct_declarator\n",linea, yytext );}
+	: pointer direct_declarator {printf("%d con %s  declarator: pointer direct_declarator \n",linea, gramaticas );}
+	| direct_declarator {printf("%d con %s  declarator: direct_declarator\n",linea, gramaticas );}
+	| direct_declarator declarator{printf("%d con %s  declarator: declarator direct_declarator\n",linea, gramaticas );}
+	| IDENTIFIER pointer declarator {printf("%d con %s  declarator: IDENTIFIER pointer declarator \n",linea, gramaticas );}
 
+	
 	;
 
 direct_declarator
-	: IDENTIFIER {printf("%d con %s  direct_declarator: IDENTIFIER\n",linea, yytext);}
+	: IDENTIFIER {printf("%d con %s  direct_declarator: IDENTIFIER\n",linea, gramaticas);}
 	| LEFT_PARENTHESIS declarator RIGHT_PARENTHESIS {printf("%d con %s  direct_declarator: LEFT_PARENTHESIS declarator RIGHT_PARENTHESIS\n",linea, yytext );}
 	| direct_declarator LEFT_SBRACKET constant_expression RIGHT_SBRACKET {printf("%d con %s  direct_declarator: direct_declarator LEFT_SBRACKET constant_expression RIGHT_SBRACKET\n",linea,yytext);}
 	| direct_declarator LEFT_SBRACKET RIGHT_SBRACKET {printf("%d con %s  direct_declarator: direct_declarator LEFT_SBRACKET RIGHT_SBRACKET\n",linea, yytext );}
@@ -298,10 +301,10 @@ direct_declarator
 	;
 
 pointer
-	: MUL { printf("%d con %s  pointer: MUL\n",linea, yytext);}
-	| MUL type_qualifier_list {printf("%d con %s  pointer: MUL type_qualifier_list\n",linea, yytext );}
-	| MUL pointer {printf("%d con %s  pointer: MUL pointer\n",linea, yytext );}
-	| MUL type_qualifier_list pointer {printf("%d con %s  pointer: MUL type_qualifier_list pointer\n",linea, yytext);}
+	: MUL { printf("%d con %s  pointer: MUL\n",linea, gramaticas);}
+	| MUL type_qualifier_list {printf("%d con %s  pointer: MUL type_qualifier_list\n",linea, gramaticas );}
+	| MUL pointer {printf("%d con %s  pointer: MUL pointer\n",linea, gramaticas );}
+	| MUL type_qualifier_list pointer {printf("%d con %s  pointer: MUL type_qualifier_list pointer\n",linea,gramaticas);}
 	;
 
 type_qualifier_list
@@ -327,7 +330,7 @@ parameter_declaration
 	;
 
 identifier_list
-	: IDENTIFIER {printf("%d con %s  identifier_list: IDENTIFIER\n",linea, yytext);}
+	: IDENTIFIER {printf("%d con %s  identifier_list: IDENTIFIER\n",linea, yytext);$$=strdup(yytext);}
 	| identifier_list COMMA IDENTIFIER {printf("%d con %s  identifier_list: identifier_list COMMA IDENTIFIER\n",linea, yytext );}
 	;
 
@@ -385,6 +388,7 @@ compound_statement
 	| LEFT_BRACKET statement_list RIGHT_BRACKET {printf("%d con %s  compound_statement: LEFT_BRACKET statement_list RIGHT_BRACKET\n",linea, yytext );}
 	| LEFT_BRACKET declaration_list RIGHT_BRACKET {printf("%d con %s  compound_statement: LEFT_BRACKET declaration_list RIGHT_BRACKET\n",linea, yytext);}
 	| LEFT_BRACKET declaration_list statement_list RIGHT_BRACKET {printf("%d con %s  compound_statement: LEFT_BRACKET declaration_list statement_list RIGHT_BRACKET\n",linea, yytext);}
+
 	;
 
 declaration_list
@@ -395,6 +399,7 @@ declaration_list
 statement_list
 	: statement {printf("%d con %s  statement_list: statement\n",linea, yytext );}
 	| statement_list statement {printf("%d con %s  statement_list: statement_list statement\n",linea, yytext);}
+	| statement_list declaration_list 
 	;
 
 expression_statement
@@ -413,6 +418,7 @@ iteration_statement
 	| DO statement WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON {printf("%d con %s  iteration_statement: DO statement WHILE LEFT_PARENTHESIS expression RIGHT_PARENTHESIS SEMICOLON\n",linea, yytext);}
 	| FOR LEFT_PARENTHESIS expression_statement expression_statement RIGHT_PARENTHESIS statement {printf("%d con %s  iteration_statement: FOR LEFT_PARENTHESIS expression_statement expression_statement RIGHT_PARENTHESIS statement\n",linea, yytext );}
 	| FOR LEFT_PARENTHESIS expression_statement expression_statement expression RIGHT_PARENTHESIS statement {printf("%d con %s  iteration_statement: FOR LEFT_PARENTHESIS expression_statement expression_statement expression RIGHT_PARENTHESIS statement\n",linea, yytext);}
+	| FOR LEFT_PARENTHESIS declaration_list expression_statement expression RIGHT_PARENTHESIS statement {printf("%d con %s  iteration_statement: FOR LEFT_PARENTHESIS expression_statement expression_statement expression RIGHT_PARENTHESIS statement\n",linea, yytext);}
 	;
 
 jump_statement
@@ -424,9 +430,9 @@ jump_statement
 	;
 
 translation_unit
-	: external_declaration {printf("%d con %s  translation_unit: Entre a external_declaration\n",linea, yytext);} 
-	| translation_unit external_declaration  {printf("%d con %s  translation_unit: Entre a ciclo translation_unit\n",linea, yytext );}
-	| /* empty */{printf("%d  translation_unit: Archivo Vacío\n",linea );}
+	: external_declaration {printf("%d con %s  translation_unit: Entre a external_declaration\n",linea, yytext);memset(gramaticas,0,sizeof(gramaticas));} 
+	| translation_unit external_declaration  {printf("%d con %s  translation_unit: Entre a ciclo translation_unit\n",linea, yytext );memset(gramaticas,0,sizeof(gramaticas));}
+	| /* empty */{printf("%d  translation_unit: Archivo Vacío\n",linea );memset(gramaticas,0,sizeof(gramaticas));}
 
 	;
 
@@ -438,7 +444,7 @@ external_declaration
 	| INCLUDE LESS IDENTIFIER DOT IDENTIFIER GREATER{printf("%d con %s  external_declaration: INCLUDE LITERALn\n",linea, yytext);}
 	;
 define 
-	: IDENTIFIER define {printf("%d con %s  define: IDENTIFIER define\n",linea, yytext);}
+	: IDENTIFIER define {printf("%d con %s  define: IDENTIFIER define\n",linea, yytext);$$=strdup(yytext);}
     | IDENTIFIER define_continue {printf("%d con %s  define: IDENTIFIER define_continue\n",linea, yytext);}
 	;
 define_continue
