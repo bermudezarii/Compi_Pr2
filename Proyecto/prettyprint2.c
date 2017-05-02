@@ -15,6 +15,7 @@ static char prettyprint[1000] = "";
 static char nuevo[1000][1000];
 static char viejo[1000][1000];
 int ciclo = 0; 
+int banderaDo = 0; 
 
 
 void prettyprintSelect(int value, FILE * archivoPretty){
@@ -62,13 +63,21 @@ int prettyprintGNU(FILE * archivoPretty){
             endline=1;
       }
 
-        if (ntoken == FOR || ntoken == IF|| ntoken == WHILE ){ /*este caso toma estas palabras ya que son de los ciclos tramposos*/
+        if (ntoken == FOR || ntoken == IF|| ntoken == WHILE || ntoken == DO){ /*este caso toma estas palabras ya que son de los ciclos tramposos*/
+      int token = ntoken; 
+          if (token == DO){
+            printf("entro en DO");
+            banderaDo = 1; 
+          }
+
           if(ciclo >= 1 && anterior != LEFT_BRACKET && anterior != ELSE ){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
             generadorEspacios(contador); 
             putPretty(espacios, archivoPretty); 
           }
-          while(ntoken != RIGHT_PARENTHESIS){ /* el while es para que vaya metiendo las cosas normal hasta q encuentra )
-           que es el punto crucial, de si va a tener brackets o va a ser tramposo (de una linea)*/ 
+
+          if(token != DO){
+            while(ntoken != RIGHT_PARENTHESIS){ /* el while es para que vaya metiendo las cosas normal hasta q encuentra ')'
+            que es el punto crucial, de si va a tener brackets o va a ser tramposo (de una linea)*/ 
             printf("voy por: %s\n", yytext);
             if (ntoken == LEFT_PARENTHESIS){ /* como esta la regla q antes de un ( hay q poner un espacio*/
               putPretty(" ", archivoPretty);
@@ -77,6 +86,8 @@ int prettyprintGNU(FILE * archivoPretty){
             putPretty(" ", archivoPretty); 
             ntoken = nextToken(); 
           }  
+          }
+
           putPretty(yytext, archivoPretty); 
           ntoken = nextToken(); 
           printf("token despues de expression: %s \n", yytext);
@@ -85,19 +96,27 @@ int prettyprintGNU(FILE * archivoPretty){
 
           if (ntoken != LEFT_BRACKET){ /* si no tiene brackets, es uno de los tramposos, 
           entonces solo le pongo los espacios, copio la linea (hasta el semicolon) y seguimos con la vida*/
-            printf("entra al ntoken != LEFT_BRACKET\n");
-            putPretty("\n", archivoPretty); 
-            contador = contador + 4 ; 
-            generadorEspacios(contador); 
-            putPretty(espacios, archivoPretty); 
-            while(ntoken != SEMICOLON){
-              putPretty(yytext, archivoPretty); 
-              putPretty(" ", archivoPretty); 
-              ntoken = nextToken(); 
+            if(banderaDo == 1 && token == WHILE){
+              putPretty(yytext, archivoPretty);              
+              putPretty("\n", archivoPretty); 
+              banderaDo = 0; 
             }
-            putPretty(yytext, archivoPretty);
-            contador = contador - 4; 
-            putPretty("\n", archivoPretty); 
+            else{
+              printf("entra al ntoken != LEFT_BRACKET\n");
+              putPretty("\n", archivoPretty); 
+              contador = contador + 4 ; 
+              generadorEspacios(contador); 
+              putPretty(espacios, archivoPretty); 
+              while(ntoken != SEMICOLON){
+                putPretty(yytext, archivoPretty); 
+                putPretty(" ", archivoPretty); 
+                ntoken = nextToken(); 
+              }
+              putPretty(yytext, archivoPretty);
+              contador = contador - 4; 
+              putPretty("\n", archivoPretty); 
+            }
+
           }
           else if (ntoken == LEFT_BRACKET){ /* si tiene brackets wuuuuu, pongalo y siga como si nada*/
             ciclo = ciclo + 1 ;

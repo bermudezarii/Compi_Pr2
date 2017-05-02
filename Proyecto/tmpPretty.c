@@ -16,9 +16,11 @@ int main  (int argc , char * argv [ ] )
             else printf  ("nada" ) ;
           }
         dfsd = 34 ;
-        do rt = 5 ;
-        while  ( true )
-            ;
+        do
+          {
+            rt = 5 ;
+          }
+        while  ( true );
       }
     return 100 ;
   }

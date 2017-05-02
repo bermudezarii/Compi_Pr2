@@ -10,7 +10,7 @@ else
 printf ( "nada" ) ; 
 } 
 dfsd = 34 ; 
-do rt = 5 ; 
+do { rt = 5 ; } 
 while ( true ) ; 
 } 
 return 100 ; 
