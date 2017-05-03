@@ -231,7 +231,7 @@ int prettyprintBSD(FILE *archivoPretty){
             if (ntoken == LEFT_PARENTHESIS){
               putPretty(" ", archivoPretty);
             }
-            if
+
             putPretty(yytext, archivoPretty); 
             putPretty(" ", archivoPretty); 
             ntoken = nextToken(); 
