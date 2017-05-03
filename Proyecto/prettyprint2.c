@@ -64,7 +64,7 @@ int prettyprintGNU(FILE * archivoPretty){
             endline=1;
       }
 
-        if (ntoken == FOR || ntoken == IF|| ntoken == WHILE || ntoken == DO){ /*este caso toma estas palabras ya que son de los ciclos tramposos*/
+        if (ntoken == FOR || ntoken == IF|| ntoken == WHILE || ntoken == DO || ntoken == ELSE){ /*este caso toma estas palabras ya que son de los ciclos tramposos*/
       int token = ntoken; 
           if (token == DO){
             printf("entro en DO");
@@ -189,6 +189,7 @@ int prettyprintGNU(FILE * archivoPretty){
           if(banderaCase == 1){
             generadorEspacios(contador); 
             putPretty(espacios, archivoPretty);  	
+          }
        	}
 
        	//contemplar el if q no trae llaves y el que trae llaves eELSE (lo hago cuando este modularizado) EL DO! 
@@ -202,7 +203,7 @@ int prettyprintGNU(FILE * archivoPretty){
           
        		putPretty(yytext, archivoPretty); /*pongo la palabra kawai!*/
        		putPretty(" ", archivoPretty); 
-       	}
+       	} 
        	anterior = ntoken; /*guardo el anterior porque me ayuda a verificar ciertas cosas*/
        	ntoken = nextToken(); /*como el i++ de nuestro ciclo*/
 	   
@@ -211,9 +212,11 @@ int prettyprintGNU(FILE * archivoPretty){
     return 0;
 }
 
+
+
 int prettyprintBSD(FILE *archivoPretty){
-	
-	//warning: antes debe tener puesto el tmpfile como el yyin 
+  
+  //warning: antes debe tener puesto el tmpfile como el yyin 
     int ntoken, anterior;
     ntoken = nextToken();
     while(ntoken) {
@@ -231,7 +234,6 @@ int prettyprintBSD(FILE *archivoPretty){
             if (ntoken == LEFT_PARENTHESIS){
               putPretty(" ", archivoPretty);
             }
-
             putPretty(yytext, archivoPretty); 
             putPretty(" ", archivoPretty); 
             ntoken = nextToken(); 
@@ -265,9 +267,9 @@ int prettyprintBSD(FILE *archivoPretty){
             contador = contador + 8 ; /*Se suman dos espacios para el GNU style*/ 
             generadorEspacios(espaciosLlave);  /*Se colocan los espacios*/
             putPretty(espacios, archivoPretty); 
-			putPretty(yytext, archivoPretty); /*Se coloca la llave que abre*/ 
+      putPretty(yytext, archivoPretty); /*Se coloca la llave que abre*/ 
             
-			putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
+      putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
                         
             generadorEspacios(contador);  /*Se colocan los espacios*/
             putPretty(espacios, archivoPretty); 
@@ -291,9 +293,9 @@ int prettyprintBSD(FILE *archivoPretty){
           contador = contador + 8 ; /*Se suman dos espacios para el GNU style*/ 
           generadorEspacios(espaciosLlave);  /*Se colocan los espacios*/
           putPretty(espacios, archivoPretty); 
-		  putPretty(yytext, archivoPretty); /*Se coloca la llave que abre*/ 
+      putPretty(yytext, archivoPretty); /*Se coloca la llave que abre*/ 
             
-		  putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
+      putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
                         
           generadorEspacios(contador);  /*Se colocan los espacios*/
           putPretty(espacios, archivoPretty); 
@@ -305,50 +307,50 @@ int prettyprintBSD(FILE *archivoPretty){
           //generadorEspacios(contador);  /*Se colocan los espacios*/
           //putPretty(espacios, archivoPretty); 
           //putPretty(yytext, archivoPretty); /*Se coloca la llave que abre*/ 
-          //contador = contador + 2;	/*Se suman otros dos espacios para que ya el resto bn identado*/
+          //contador = contador + 2;  /*Se suman otros dos espacios para que ya el resto bn identado*/
           //putPretty("\n", archivoPretty);/*Se coloca un salto de línea*/
           //generadorEspacios(contador); /*espacios*/ 
           //putPretty(espacios, archivoPretty); 
           }
         /*Cuando se encuentra una llamada a una función (paréntesis) se deja un espacio*/
         //else if (ntoken == LEFT_PARENTHESIS){
-        //	putPretty(" ", archivoPretty); /* se le pone el espacio*/
-        //	putPretty(yytext, archivoPretty); /*el ( */ 
+        //  putPretty(" ", archivoPretty); /* se le pone el espacio*/
+        //  putPretty(yytext, archivoPretty); /*el ( */ 
         //}
-       	else if (ntoken == RIGHT_BRACKET){
-       		contador = contador - 8; /*Se restan dos espacios, porq la llave se pone un poquito antes*/
-       		generadorEspacios(contador); /* espacios */ 
-       		putPretty(espacios, archivoPretty);
-       		putPretty(yytext, archivoPretty); /* el } */
-       		//contador = contador-2; /* lo deja bien en identacion para lo que sigue */ 
-       		putPretty("\n", archivoPretty); /* salto de linea */
-       		putPretty(espacios, archivoPretty);
-       		
+        else if (ntoken == RIGHT_BRACKET){
+          contador = contador - 8; /*Se restan dos espacios, porq la llave se pone un poquito antes*/
+          generadorEspacios(contador); /* espacios */ 
+          putPretty(espacios, archivoPretty);
+          putPretty(yytext, archivoPretty); /* el } */
+          //contador = contador-2; /* lo deja bien en identacion para lo que sigue */ 
+          putPretty("\n", archivoPretty); /* salto de linea */
+          putPretty(espacios, archivoPretty);
+          
 
           if(ciclo >=1){
             ciclo = ciclo - 1 ; 
           }
           
-       	}
-       	else if (ntoken == SEMICOLON){
-       		putPretty(yytext, archivoPretty); 
-       		putPretty("\n", archivoPretty); 
-      	
-       	}
+        }
+        else if (ntoken == SEMICOLON){
+          putPretty(yytext, archivoPretty); 
+          putPretty("\n", archivoPretty); 
+        
+        }
 
-       	//contemplar el if q no trae llaves y el que trae llaves eELSE  EL DO! 
-       	//else if (ntoken == CASE || ntoken == DEFAULT){}
-       	else{
-       		if(anterior == SEMICOLON || anterior == RIGHT_BRACKET){
-       			generadorEspacios(contador); 
-       			putPretty(espacios, archivoPretty); 
-       		}
-       		putPretty(yytext, archivoPretty); 
-       		putPretty(" ", archivoPretty); 
-       	}
-       	anterior = ntoken;
-       	ntoken = nextToken();
-	   
+        //contemplar el if q no trae llaves y el que trae llaves eELSE  EL DO! 
+        //else if (ntoken == CASE || ntoken == DEFAULT){}
+        else{
+          if(anterior == SEMICOLON || anterior == RIGHT_BRACKET){
+            generadorEspacios(contador); 
+            putPretty(espacios, archivoPretty); 
+          }
+          putPretty(yytext, archivoPretty); 
+          putPretty(" ", archivoPretty); 
+        }
+        anterior = ntoken;
+        ntoken = nextToken();
+     
     }
     printf("asi queda prettyprintprinteado\n%s\n", prettyprint);
     return 0;
