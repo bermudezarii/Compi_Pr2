@@ -64,7 +64,7 @@ int prettyprintGNU(FILE * archivoPretty){
             endline=1;
       }
 
-        if (ntoken == FOR || ntoken == IF|| ntoken == WHILE || ntoken == DO){ /*este caso toma estas palabras ya que son de los ciclos tramposos*/
+        if (ntoken == FOR || ntoken == IF|| ntoken == WHILE || ntoken == DO || ntoken == ELSE){ /*este caso toma estas palabras ya que son de los ciclos tramposos*/
       int token = ntoken; 
           if (token == DO){
             printf("entro en DO");
@@ -203,7 +203,7 @@ int prettyprintGNU(FILE * archivoPretty){
           
        		putPretty(yytext, archivoPretty); /*pongo la palabra kawai!*/
        		putPretty(" ", archivoPretty); 
-       	}
+       	} 
        	anterior = ntoken; /*guardo el anterior porque me ayuda a verificar ciertas cosas*/
        	ntoken = nextToken(); /*como el i++ de nuestro ciclo*/
 	   
