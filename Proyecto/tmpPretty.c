@@ -1,4 +1,8 @@
-#include "maze_walker.h" void init_threads_list_mutex (void)
+#include "maze_walker.h"
+#define a 3 2
+#define a 3 2
+#include "maze_walker.h"
+void init_threads_list_mutex (void)
   {
     pthread_mutexattr_init (&attr);
     pthread_mutexattr_setpshared (&attr , PTHREAD_PROCESS_PRIVATE);
