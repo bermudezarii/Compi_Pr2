@@ -1,14 +1,11 @@
 #include "maze_walker.h"
-#define a 3 2
-#define a 3 2
-#include "maze_walker.h"
 void init_threads_list_mutex (void)
   {
     pthread_mutexattr_init (&attr);
-    pthread_mutexattr_setpshared (&attr , PTHREAD_PROCESS_PRIVATE);
-    pthread_mutex_init (&mu_threads_list , &attr);
+    pthread_mutexattr_setpshared (&attr ,PTHREAD_PROCESS_PRIVATE);
+    pthread_mutex_init (&mu_threads_list ,&attr);
   }
-void create_walker (int row , int column , int steps , int direction)
+void create_walker (int row ,int column ,int steps ,int direction)
   {
     int i;
     MazeWalker new_walker;
@@ -22,23 +19,23 @@ void create_walker (int row , int column , int steps , int direction)
     new_walker.threadWalker = NULL;
     switch (new_walker.direction)
       {
-        case UP :
+        case UP:
             new_walker.row --;
             break;
-        case RIGHT :
+        case RIGHT:
             new_walker.column ++;
             break;
-        case DOWN :
+        case DOWN:
             new_walker.row ++;
             break;
-        case LEFT :
+        case LEFT:
             new_walker.column --;
             break;
       }
-    for (i = 0 ; i < 2 ; i ++ ) 
+    for (i = 0 ; i < 2 ; i ++)
       {
-        if (colides  ( new_walker . row , new_walker . column ) ) 
-            return;
+        if (colides (new_walker.row ,new_walker.column))
+             return;
         sleep (1);
       }
     pthread_mutex_lock (&mu_threads_list);
@@ -48,7 +45,7 @@ void create_walker (int row , int column , int steps , int direction)
   }
 static void add_walker (MazeWalker walker)
   {
-    if (! head ) 
+    if (!head)
       {
         head = (Node *) malloc (sizeof (Node));
         head->walker = walker;
@@ -64,10 +61,10 @@ static void add_walker (MazeWalker walker)
 int all_threads_death (void)
   {
     Node * temp = head;
-    while (temp ) 
+    while (temp)
       {
-        if (! temp -> walker . finished ) 
-            return 0;
+        if (!temp->walker.finished)
+             return 0;
         temp = temp->next;
       }
     return 1;
@@ -79,17 +76,17 @@ Node * get_head (void)
 void print_finished_walkers (void)
   {
     current = head;
-    while (current ) 
+    while (current)
       {
-        if (current -> walker . exited ) 
-            printf ("El caminante %d llego a la salida ubicada en la fila %d columna %d en %d pasos.\n" , current->walker.id , current->walker.row , current->walker.column , current->walker.steps);
+        if (current->walker.exited)
+             printf ("El caminante %d llego a la salida ubicada en la fila %d columna %d en %d pasos.\n" ,current->walker.id ,current->walker.row ,current->walker.column ,current->walker.steps);
         current = current->next;
       }
     printf ("\n\n");
   }
 void delete_walkers (void)
   {
-    while (head ) 
+    while (head)
       {
         current = head;
         head = head->next;
