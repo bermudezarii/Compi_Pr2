@@ -102,10 +102,10 @@ void tokensNormales(FILE * archivoPretty){
         generadorEspacios(contador, archivoPretty); 
         putPretty(yytext, archivoPretty);
       }
-      else if(anterior == DOT || anterior == PTR_OP || anterior == LEFT_BRACKET ||
-       anterior == LEFT_PARENTHESIS || ntoken == RIGHT_PARENTHESIS || anterior == EXCLAMATION 
+      else if(anterior == DOT || anterior == PTR_OP || anterior == LEFT_BRACKET || anterior == LEFT_SBRACKET ||  ntoken == LEFT_SBRACKET || 
+       anterior == LEFT_PARENTHESIS || ntoken == RIGHT_PARENTHESIS || anterior == EXCLAMATION || ntoken == RIGHT_SBRACKET 
        || anterior == BIT_AND || anterior == -1 || anterior == COLON || saltoInclude == 1 || anterior == INCLUDE 
-       || anterior == DEFINE || ntoken == DOT || ntoken == PTR_OP || anterior == COMMA){
+       || anterior == DEFINE || ntoken == DOT || ntoken == PTR_OP || ntoken == COMMA){
         saltoInclude = 0;
         putPretty(yytext, archivoPretty); 
       }

@@ -1,101 +1,75 @@
 
-void init_threads_list_mutex ( void ) 
+void init_maze_mutex ( void ) 
 { 
 pthread_mutexattr_init ( & attr ) ; 
 pthread_mutexattr_setpshared ( & attr , PTHREAD_PROCESS_PRIVATE ) ; 
-pthread_mutex_init ( & mu_threads_list , & attr ) ; 
+pthread_mutex_init ( & mu_maze , & attr ) ; 
 } 
-void create_walker ( int row , int column , int steps , int direction ) 
+void * check_for_threads ( void * _ ) 
 { 
-int i ; 
-MazeWalker new_walker ; 
-new_walker . row = row ; 
-new_walker . column = column ; 
-new_walker . steps = ++ steps ; 
-new_walker . color = color_count ++ % 8 ; 
-new_walker . exited = 0 ; 
-new_walker . finished = 0 ; 
-new_walker . direction = direction ; 
-new_walker . threadWalker = NULL ; 
-switch ( new_walker . direction ) 
+Node * checker = NULL ; 
+pthread_attr_t attr ; 
+pthread_attr_init ( & attr ) ; 
+pthread_attr_setdetachstate ( & attr , PTHREAD_CREATE_DETACHED ) ; 
+while ( ! all_threads_death ( ) ) 
 { 
-case UP : 
-new_walker . row -- ; 
-break ; 
-case RIGHT : 
-new_walker . column ++ ; 
-break ; 
-case DOWN : 
-new_walker . row ++ ; 
-break ; 
-case LEFT : 
-new_walker . column -- ; 
-break ; 
-} 
-for ( i = 0 ; i < 2 ; i ++ ) 
-{ 
-if ( colides ( new_walker . row , new_walker . column ) ) 
-return ; 
-sleep ( 1 ) ; 
-} 
 pthread_mutex_lock ( & mu_threads_list ) ; 
-new_walker . id = thread_count ++ ; 
-add_walker ( new_walker ) ; 
+if ( ! checker ) 
+checker = get_head ( ) ; 
+if ( ! checker -> walker . threadWalker ) 
+pthread_create ( & checker -> walker . threadWalker , & attr , move , ( void * ) & checker -> walker ) ; 
+checker = checker -> next ; 
 pthread_mutex_unlock ( & mu_threads_list ) ; 
 } 
-static void add_walker ( MazeWalker walker ) 
-{ 
-if ( ! head ) 
-{ 
-head = ( Node * ) malloc ( sizeof ( Node ) ) ; 
-head -> walker = walker ; 
-head -> next = NULL ; 
-current = head ; 
-return ; 
+pthread_attr_destroy ( & attr ) ; 
+return NULL ; 
 } 
-current -> next = ( Node * ) malloc ( sizeof ( Node ) ) ; 
-current -> next -> walker = walker ; 
-current -> next -> next = NULL ; 
-current = current -> next ; 
-} 
-int all_threads_death ( void ) 
+void * move ( void * param ) 
 { 
-Node * temp = head ; 
-while ( temp ) 
+int i ; 
+MazeWalker * walker = ( MazeWalker * ) param ; 
+for ( i = 0 ; i < 4 ; i ++ ) 
+walker -> directions [ i ] = 0 ; 
+while ( ! colides ( walker -> row , walker -> column ) ) 
 { 
-if ( ! temp -> walker . finished ) 
-return 0 ; 
-temp = temp -> next ; 
-} 
-return 1 ; 
-} 
-Node * get_head ( void ) 
+pthread_mutex_lock ( & mu_maze ) ; 
+put_symbol ( walker -> id , walker -> color , walker -> row , walker -> column ) ; 
+check_around ( walker -> directions , walker -> row , walker -> column ) ; 
+pthread_mutex_unlock ( & mu_maze ) ; 
+for ( i = 0 ; i < 4 ; i ++ ) 
 { 
-return head ; 
-} 
-void print_finished_walkers ( void ) 
+if ( walker -> directions [ i ] ) 
 { 
-current = head ; 
-while ( current ) 
-{ 
-if ( current -> walker . exited ) 
-printf ( "El caminante %d llego a la salida ubicada en la fila %d columna %d en %d pasos.\n" , 
-current -> walker . id , current -> walker . row , current -> walker . column , current -> walker . steps ) ; 
-current = current -> next ; 
-} 
-printf ( "\n\n" ) ; 
-} 
-void delete_walkers ( void ) 
-{ 
-while ( head ) 
-{ 
-current = head ; 
-head = head -> next ; 
-free ( current ) ; 
+if ( walker -> direction != i ) 
+create_walker ( walker -> row , walker -> column , walker -> steps , i ) ; 
+walker -> directions [ i ] = 0 ; 
 } 
 } 
-void destroy_threads_list_mutex ( void ) 
+switch ( walker -> direction ) 
 { 
-pthread_mutex_destroy ( & mu_threads_list ) ; 
+case UP : 
+walker -> row -- ; 
+break ; 
+case RIGHT : 
+walker -> column ++ ; 
+break ; 
+case DOWN : 
+walker -> row ++ ; 
+break ; 
+case LEFT : 
+walker -> column -- ; 
+break ; 
+} 
+if ( is_exit ( walker -> row , walker -> column ) ) 
+walker -> exited = 1 ; 
+walker -> steps ++ ; 
+sleep ( 2 ) ; 
+} 
+walker -> finished = 1 ; 
+return NULL ; 
+} 
+void destroy_maze_mutex ( void ) 
+{ 
+pthread_mutex_destroy ( & mu_maze ) ; 
 pthread_mutexattr_destroy ( & attr ) ; 
 } 
