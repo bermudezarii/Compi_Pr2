@@ -105,7 +105,7 @@ L?'(\\.|[^\\'])+'	             											{strcat(gramaticas,yytext);strcat(gram
 
 "#include"			  	  													{strcat(gramaticas,yytext);strcat(gramaticas," ");return INCLUDE;}
 "#define"			  	  													{strcat(gramaticas,yytext);strcat(gramaticas," ");return DEFINE;}
-[a-zA-Z][_a-zA-Z0-9]*|_	          											{strcat(gramaticas,yytext);strcat(gramaticas," ");return IDENTIFIER;}
+[a-zA-Z][_a-zA-Z0-9]*|_[a-zA-Z0-9]*              							{strcat(gramaticas,yytext);strcat(gramaticas," ");return IDENTIFIER;}
 L?\"(\\.|[^\\"]|\n)*\"         	  											{strcat(gramaticas,yytext);strcat(gramaticas," ");return LITERAL;}
 L?\'(\\.|[^\\']|\n)*'        	  											{strcat(gramaticas,yytext);strcat(gramaticas," ");return LITERAL;}
 \n|\z|\s|\r		 															{linea++;endline=0;/*ignore*/;}
