@@ -60,7 +60,7 @@ void generadorEspacios(int numero, FILE * archivoPretty){
 
 void putPretty(char * text, FILE * archivoTemporal){
 	fputs(text, archivoTemporal); 
-	strcat(prettyprint, text); 
+	//strcat(prettyprint, text); 
 	printf("%s", text);
 }
 
