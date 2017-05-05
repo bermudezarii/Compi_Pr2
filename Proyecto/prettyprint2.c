@@ -190,9 +190,16 @@ void tokenCase(FILE * archivoPretty){
 }
 
 void tokenBreak(FILE * archivoPretty){
-      banderaCase = 0 ; 
-      putPretty(yytext, archivoPretty); 
-      contador = contador - 4 ; 
+      if (banderaCase == 0){
+        generadorEspacios(contador,archivoPretty); 
+        putPretty(yytext, archivoPretty);  
+      }
+      else{
+        putPretty(yytext, archivoPretty);  
+        contador = contador - 4 ;   
+        banderaCase = 0 ; 
+      }
+       
 }
 
 void tokenLeftBracket(FILE * archivoPretty, int tipo){
@@ -204,7 +211,11 @@ void tokenLeftBracket(FILE * archivoPretty, int tipo){
       putPretty(yytext, archivoPretty); /*Se coloca la llave que abre*/ 
       contador = contador + 2;  /*Se suman otros dos espacios para que ya el resto bn identado*/
       putPretty("\n", archivoPretty);/*Se coloca un salto de línea*/
-      generadorEspacios(contador, archivoPretty); /*espacios*/ 
+      banderaNOtoken = 1; 
+      anterior = ntoken; 
+      ntoken = nextToken(); 
+      if(ntoken != RIGHT_BRACKET)
+        generadorEspacios(contador, archivoPretty); /*espacios*/ 
 }
 
 void tokenLeftParenthesis(FILE * archivoPretty){
