@@ -195,6 +195,7 @@ declaration_specifiers
 	| type_specifier declaration_specifiers {printf("%d con %s  declaration_specifiers: type_specifier declaration_specifiers {\n",linea, gramaticas);}
 	| type_qualifier {printf("%d con %s  declaration_specifiers: type_qualifier\n",linea, gramaticas );}
 	| type_qualifier declaration_specifiers {printf("%d con %s  declaration_specifiers: type_qualifier declaration_specifiers\n",linea, gramaticas );}
+	
 	;
 
 init_declarator_list
@@ -244,6 +245,7 @@ struct_or_union
 struct_declaration_list
 	: struct_declaration {printf("%d con %s  struct_declaration_list: struct_declaration\n",linea, gramaticas );}
 	| struct_declaration_list struct_declaration {printf("%d con %s  struct_declaration_list: struct_declaration_list struct_declaration\n",linea, gramaticas );}
+	| struct_declaration_list declaration_list
 	;
 
 struct_declaration
@@ -298,6 +300,8 @@ declarator
 
 direct_declarator
 	: IDENTIFIER {printf("%d con %s  direct_declarator: IDENTIFIER\n",linea, gramaticas);}
+	| direct_declarator DOT direct_declarator
+	| direct_declarator PTR_OP direct_declarator
 	| LEFT_PARENTHESIS declarator RIGHT_PARENTHESIS {printf("%d con %s  direct_declarator: LEFT_PARENTHESIS declarator RIGHT_PARENTHESIS\n",linea, gramaticas );}
 	| direct_declarator LEFT_SBRACKET constant_expression RIGHT_SBRACKET {printf("%d con %s  direct_declarator: direct_declarator LEFT_SBRACKET constant_expression RIGHT_SBRACKET\n",linea,gramaticas);}
 	| direct_declarator LEFT_SBRACKET RIGHT_SBRACKET {printf("%d con %s  direct_declarator: direct_declarator LEFT_SBRACKET RIGHT_SBRACKET\n",linea, gramaticas );}
