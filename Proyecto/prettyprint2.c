@@ -25,6 +25,7 @@ int banderaIncludeDefine = 0;
 int saltoInclude = 0; 
 int token = 0; 
 int banderaParen = 0; 
+int banderaCaseBracket = 0 ; 
 
 void prettyprintSelect(int value, FILE * archivoPretty){
 	printf("Entro con:%d\n", value);
@@ -101,7 +102,7 @@ int redireccionar(FILE * archivoPretty){
 
 
 void tokensNormales(FILE * archivoPretty){
-      if((anterior == SEMICOLON && banderaParen == 0)|| anterior == RIGHT_BRACKET){ /*si antes habia un semicolon o }, 
+      if(((anterior == SEMICOLON && banderaParen == 0)|| anterior == RIGHT_BRACKET) && banderaCase == 0){ /*si antes habia un semicolon o }, 
       di tengo q identar porq solo me dejaron en el inicio de la linea*/
         generadorEspacios(contador, archivoPretty); 
         putPretty(yytext, archivoPretty);
@@ -110,7 +111,9 @@ void tokensNormales(FILE * archivoPretty){
        anterior == LEFT_PARENTHESIS || ntoken == RIGHT_PARENTHESIS || anterior == EXCLAMATION || ntoken == RIGHT_SBRACKET 
        || anterior == BIT_AND || anterior == -1 || anterior == COLON || saltoInclude == 1 || anterior == INCLUDE 
        || anterior == DEFINE || ntoken == DOT || ntoken == PTR_OP || ntoken == COMMA){
+       if(saltoInclude == 1){
         saltoInclude = 0;
+       } 
         putPretty(yytext, archivoPretty); 
       }
       else{
@@ -126,7 +129,7 @@ void tokenCondicionales(FILE * archivoPretty){
         banderaDo = 1; 
       }
 
-      if((ciclo >= 1 && anterior != LEFT_BRACKET && anterior != ELSE )|| (anterior == RIGHT_BRACKET || anterior == SEMICOLON)){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
+      if((anterior != LEFT_BRACKET && anterior != ELSE )|| (anterior == RIGHT_BRACKET || anterior == SEMICOLON)){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
         generadorEspacios(contador, archivoPretty); 
       }
 
@@ -137,7 +140,8 @@ void tokenCondicionales(FILE * archivoPretty){
         int contadorRParen = 0; 
         
         if(ntoken == IF){
-          tokensNormales(archivoPretty);  
+          putPretty(" ", archivoPretty); 
+          putPretty(yytext, archivoPretty); 
           anterior = ntoken; 
           ntoken = nextToken();   
         }
@@ -182,14 +186,25 @@ void tokenCondicionales(FILE * archivoPretty){
       }
 }
 
-void tokenCase(FILE * archivoPretty){
-      banderaCase = 1; 
+void tokenCase(FILE * archivoPretty){ 
       while(ntoken != COLON){ //case (pone esta parte)
         tokensNormales(archivoPretty); 
         anterior = ntoken; 
         ntoken = nextToken(); 
       }
-      contador = contador + 4;
+      tokensNormales(archivoPretty); 
+      anterior = ntoken; 
+      ntoken = nextToken(); 
+      printf("next token del case: %s\n", yytext);
+      if(ntoken == LEFT_BRACKET){
+        printf("entonces si entra al if LEFT_BRACKET\n");
+        tokenLeftBracket(archivoPretty); 
+      }
+      else{
+        banderaCase = 1;
+        contador = contador + 4; 
+        banderaCaseBracket = 1; 
+      }
       banderaNOtoken =1 ;
 }
 
@@ -198,10 +213,11 @@ void tokenBreak(FILE * archivoPretty){
         generadorEspacios(contador,archivoPretty); 
         putPretty(yytext, archivoPretty);  
       }
-      else{
+      if(banderaCase == 1 && banderaCaseBracket == 1){
         putPretty(yytext, archivoPretty);  
         contador = contador - 4 ;   
         banderaCase = 0 ; 
+        banderaCaseBracket = 0; 
       }
        
 }
@@ -235,9 +251,7 @@ void tokenRightBracket(FILE * archivoPretty){
       putPretty(yytext, archivoPretty); /* el } */
       contador = contador-2; /* lo deja bien en identacion para lo que sigue */ 
       putPretty("\n", archivoPretty); /* salto de linea */ 
-      if(ciclo >=1){ /* como } cierra un bloque, entonces nos ayuda a entender q salio de un ciclo */
-        ciclo = ciclo - 1 ; 
-      }
+
 }
 
 void tokenColons(FILE * archivoPretty){
