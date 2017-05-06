@@ -4,6 +4,7 @@
 	extern int yylex();
 	extern int linea ;
 	extern char* gramaticas[50000];
+	int lineaactual=0;
 
 
 %}
@@ -195,7 +196,7 @@ declaration_specifiers
 	| type_specifier declaration_specifiers {printf("%d con %s  declaration_specifiers: type_specifier declaration_specifiers {\n",linea, gramaticas);}
 	| type_qualifier {printf("%d con %s  declaration_specifiers: type_qualifier\n",linea, gramaticas );}
 	| type_qualifier declaration_specifiers {printf("%d con %s  declaration_specifiers: type_qualifier declaration_specifiers\n",linea, gramaticas );}
-	
+
 	;
 
 init_declarator_list
@@ -466,22 +467,102 @@ translation_unit
 external_declaration
 	: function_definition {printf("%d con %s  external_declaration: function_definition\n",linea, gramaticas);}
 	| declaration {printf("%d con %s  external_declaration: declaration\n",linea, gramaticas);}
-	| DEFINE define {printf("%d con %s  external_declaration: DEFINE define\n",linea, gramaticas);}
+	| DEFINE define {lineaactual=linea; printf("%d con %s  external_declaration: DEFINE define\n",linea, gramaticas);}
 	| INCLUDE LITERAL {printf("%d con %s  external_declaration: INCLUDE LITERALn\n",linea, gramaticas);}
 	| INCLUDE LESS IDENTIFIER DOT IDENTIFIER GREATER{printf("%d con %s  external_declaration: INCLUDE LITERALn\n",linea, gramaticas);}
 	| INCLUDE LESS 	IDENTIFIER DIV IDENTIFIER DOT IDENTIFIER GREATER{printf("%d con %s  external_declaration: INCLUDE LITERALn\n",linea, gramaticas);}
+	| '\n'
+	| SEMICOLON
 	;
 define
-	: IDENTIFIER define {printf("%d con %s  define: IDENTIFIER define\n",linea, gramaticas);}
-    | IDENTIFIER define_continue {printf("%d con %s  define: IDENTIFIER define_continue\n",linea, gramaticas);}
+	: '\n' {printf("Sigue");}
+	| define_options define {printf("%d con %s  define: IDENTIFIER define\n",linea, gramaticas);}
 	;
-define_continue
-	: LITERAL define_continue {printf("%d con %s  define_continue: LITERAL define_continue\n",linea, gramaticas);}
-	| CONSTANT define_continue {printf("%d con %s  define_continue:CONSTANT define_continue\n",linea, gramaticas);}
-	| INTEGER define_continue {printf("%d con %s  define_continue:  INTEGER define_continue\n",linea, gramaticas);}
-    |
-    ;
 
+define_options 
+: LITERAL
+| LEFT_BRACKET
+| RIGHT_BRACKET
+| COMMA
+| LEFT_PARENTHESIS 
+| RIGHT_PARENTHESIS 
+| RIGHT_SBRACKET
+| LEFT_SBRACKET 
+| SEMICOLON
+| COLON 
+| EXCLAMATION 
+| PRIME 
+| INTERROGATION 
+| UP_ARROW 
+| DOT
+| BIT_AND 
+| BIT_OR
+| PLUS 
+| MINUS 
+| DIV 
+| MOD 
+| MUL
+|  EQU 
+| LESS 
+| GREATER
+| IDENTIFIER 
+| CONSTANT 
+| SIZEOF 
+| INTEGER
+| PTR_OP
+| INC_OP
+| DEC_OP 
+| LEFT_OP
+| RIGHT_OP 
+| LE_OP
+| GE_OP
+| EQ_OP
+| NE_OP
+| AND_OP
+| OR_OP
+| MUL_ASSIGN
+| DIV_ASSIGN 
+| MOD_ASSIGN 
+| ADD_ASSIGN
+| SUB_ASSIGN 
+| LEFT_ASSIGN 
+| RIGHT_ASSIGN
+| AND_ASSIGN
+| XOR_ASSIGN
+| OR_ASSIGN
+| TYPEDEF
+| EXTERN 
+| STATIC
+| AUTO 
+| REGISTER
+| CHAR 
+| SHORT 
+| INT 
+| LONG 
+| SIGNED
+| UNSIGNED
+| FLOAT
+| DOUBLE 
+| CONST 
+| VOLATILE
+| VOID
+| STRUCT
+| UNION
+| ENUM
+| ELLIPSIS
+| CASE
+| DEFAULT
+| IF
+| ELSE
+| SWITCH
+| WHILE
+| DO
+| FOR
+| GOTO
+| CONTINUE
+| BREAK
+| RETURN
+;
 function_definition
 	: declaration_specifiers declarator declaration_list compound_statement {printf("%d con %s  function_definition: declaration_specifiers declarator declaration_list compound_statement\n",linea,gramaticas);}
 	| declaration_specifiers declarator compound_statement {printf("%d con %s  function_definition: declaration_specifiers declarator compound_statement \n",linea, gramaticas);}
