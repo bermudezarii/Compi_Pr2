@@ -42,6 +42,7 @@ postfix_expression
 	: primary_expression {printf("%d con %s  postfix_expression: primary_expression\n",linea, gramaticas );}
 	| pointer primary_expression {printf("%d con %s  postfix_expression: pointer primary_expression\n",linea, gramaticas);}
 	| primary_expression pointer primary_expression {printf("%d con %s  postfix_expression: primary_expression pointer primary_expression \n",linea, gramaticas );}
+	| primary_expression pointer MINUS primary_expression {printf("%d con %s  postfix_expression: primary_expression pointer primary_expression \n",linea, gramaticas );}
 	| postfix_expression LEFT_SBRACKET expression RIGHT_SBRACKET {printf("%d con %s  postfix_expression: postfix_expression RIGHT_SBRACKET expression LEFT_SBRACKET\n",linea, gramaticas);}
 	| LEFT_BRACKET RIGHT_BRACKET {printf("%d con %s  postfix_expression: postfix_expression RIGHT_SBRACKET expression LEFT_SBRACKET\n",linea, gramaticas);}
 	| postfix_expression LEFT_PARENTHESIS RIGHT_PARENTHESIS {printf("%d con %s  postfix_expression: postfix_expression LEFT_PARENTHESIS RIGHT_PARENTHESIS\n",linea,gramaticas);}

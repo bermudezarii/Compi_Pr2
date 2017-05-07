@@ -4,6 +4,7 @@
 void yyerror(char *);
 int linea = 1;
 int endline;
+int fdefine=1;
 char* gramaticas[500000];
 
 %}
@@ -103,12 +104,12 @@ L?'(\\.|[^\\'])+'	             											{strcat(gramaticas,yytext);strcat(gram
 ">>"			          													{strcat(gramaticas,yytext);strcat(gramaticas," ");return RIGHT_OP;}
 "<<"			          													{strcat(gramaticas,yytext);strcat(gramaticas," ");return LEFT_OP;}
 
-"#include"			  	  													{strcat(gramaticas,yytext);strcat(gramaticas," ");return INCLUDE;}
-"#define"			  	  													{strcat(gramaticas,yytext);strcat(gramaticas," ");return DEFINE;}
-[a-zA-Z][_a-zA-Z0-9]*|_[_a-zA-Z0-9]*    									{strcat(gramaticas,yytext);strcat(gramaticas," ");return IDENTIFIER;}
-L?\"(\\.|[^\\"]|\n)*\"         	  											{strcat(gramaticas,yytext);strcat(gramaticas," ");return LITERAL;}
-L?\'(\\.|[^\\']|\n)*'        	  											{strcat(gramaticas,yytext);strcat(gramaticas," ");return LITERAL;}
-\n|\z|\s|\r		 															{linea++;endline=0;/*ignore*/;}
+"#"(" "|\t)*"include"  	  													{strcat(gramaticas,yytext);strcat(gramaticas," ");return INCLUDE;}
+"#"(" "|\t)*"define"	  													{strcat(gramaticas,yytext);strcat(gramaticas," ");fdefine=0;return DEFINE;}
+[a-zA-Z][_a-zA-Z0-9]*|_[_a-zA-Z0-9]*|_    									{strcat(gramaticas,yytext);strcat(gramaticas," ");return IDENTIFIER;}
+\"([^\"]|\n|\\\")*\"    	       											{strcat(gramaticas,yytext);strcat(gramaticas," ");return LITERAL;}
+L?'(\\.|[^\\']|\n)*'          	  											{strcat(gramaticas,yytext);strcat(gramaticas," ");return LITERAL;}
+\n|\z|\s|\r		 															{linea++;endline=0;/*ignore*/;if(fdefine==0){fdefine=1;return ('\n');}else{fdefine=1;}}
 
 
 [ \t\n]

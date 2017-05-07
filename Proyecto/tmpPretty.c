@@ -7,7 +7,7 @@
 #include < pthread.h >
 #include < unistd.h >
 #define PI 3.14159265
-static int Hres;
+ static int Hres;
 static int Vres;
 static int maxAA;
 static int maxReflection;
