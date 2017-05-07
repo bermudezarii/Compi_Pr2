@@ -25,7 +25,8 @@ int banderaIncludeDefine = 0;
 int saltoInclude = 0; 
 int token = 0; 
 int banderaParen = 0; 
-int banderaCaseBracket = 0 ; 
+int caseLBracket = 0; 
+int caseRBracket = 0; 
 
 void prettyprintSelect(int value, FILE * archivoPretty){
 	printf("Entro con:%d\n", value);
@@ -75,10 +76,6 @@ int redireccionar(FILE * archivoPretty){
   else if(ntoken == CASE){
     tokenCase(archivoPretty); 
   }
-  else if (ntoken == BREAK){
-    tokenBreak(archivoPretty); 
-
-  }
   else if (ntoken == LEFT_BRACKET){
     tokenLeftBracket(archivoPretty); 
   }
@@ -88,7 +85,7 @@ int redireccionar(FILE * archivoPretty){
   else if (ntoken == RIGHT_BRACKET){
     tokenRightBracket(archivoPretty); 
   }
-  else if ((ntoken == SEMICOLON && banderaParen == 0)|| (ntoken == COLON && banderaCase == 1)){
+  else if (ntoken == SEMICOLON && banderaParen == 0){
     tokenColons(archivoPretty);
   }
   else if(ntoken == INCLUDE || ntoken == DEFINE){
@@ -102,7 +99,7 @@ int redireccionar(FILE * archivoPretty){
 
 
 void tokensNormales(FILE * archivoPretty){
-      if(((anterior == SEMICOLON && banderaParen == 0)|| anterior == RIGHT_BRACKET) && banderaCase == 0){ /*si antes habia un semicolon o }, 
+      if((anterior == SEMICOLON && banderaParen == 0)|| anterior == RIGHT_BRACKET || anterior == COLON){ /*si antes habia un semicolon o }, 
       di tengo q identar porq solo me dejaron en el inicio de la linea*/
         generadorEspacios(contador, archivoPretty); 
         putPretty(yytext, archivoPretty);
@@ -125,7 +122,7 @@ void tokensNormales(FILE * archivoPretty){
 void tokenCondicionales(FILE * archivoPretty){
      token = ntoken; 
       if (token == DO){
-        printf("entro en DO");
+        
         banderaDo = 1; 
       }
 
@@ -186,43 +183,40 @@ void tokenCondicionales(FILE * archivoPretty){
       }
 }
 
-void tokenCase(FILE * archivoPretty){ 
-      while(ntoken != COLON){ //case (pone esta parte)
+void tokenCase(FILE * archivoPretty){
+    if(banderaCase == 1){
+      banderaCase = 0; 
+      caseLBracket = 0; 
+      caseRBracket = 0; 
+      contador = contador - 2;  
+    }
+    while(ntoken != COLON){ //case (pone esta parte)
         tokensNormales(archivoPretty); 
         anterior = ntoken; 
         ntoken = nextToken(); 
       }
-      tokensNormales(archivoPretty); 
+      putPretty(yytext, archivoPretty); 
       anterior = ntoken; 
       ntoken = nextToken(); 
-      printf("next token del case: %s\n", yytext);
       if(ntoken == LEFT_BRACKET){
-        printf("entonces si entra al if LEFT_BRACKET\n");
-        tokenLeftBracket(archivoPretty); 
+        tokenLeftBracket(archivoPretty);
       }
       else{
+        
         banderaCase = 1;
-        contador = contador + 4; 
-        banderaCaseBracket = 1; 
-      }
-      banderaNOtoken =1 ;
+        contador = contador + 2; 
+        banderaNOtoken =1 ;
+        putPretty("\n", archivoPretty); 
+      }  
+      
 }
 
-void tokenBreak(FILE * archivoPretty){
-      if (banderaCase == 0){
-        generadorEspacios(contador,archivoPretty); 
-        putPretty(yytext, archivoPretty);  
-      }
-      if(banderaCase == 1 && banderaCaseBracket == 1){
-        putPretty(yytext, archivoPretty);  
-        contador = contador - 4 ;   
-        banderaCase = 0 ; 
-        banderaCaseBracket = 0; 
-      }
-       
-}
 
 void tokenLeftBracket(FILE * archivoPretty, int tipo){
+      if(banderaCase == 1){
+        
+        caseLBracket++; 
+      }
       /* si encuentra un bracket q no implica antes un while, if o for es como 
       preste atencion, ahora tiene q identar*/
       contador = contador + 2 ; /*Se suman dos espacios para el GNU style*/ 
@@ -239,27 +233,49 @@ void tokenLeftBracket(FILE * archivoPretty, int tipo){
 }
 
 void tokenLeftParenthesis(FILE * archivoPretty){
+    if((anterior == COLON && banderaParen == 0)|| (anterior == SEMICOLON && banderaParen ==0)){
+      generadorEspacios(contador, archivoPretty);
+    }
+    else{
       if(anterior != LEFT_PARENTHESIS){
         putPretty(" ", archivoPretty); /* se le pone el espacio*/
       }
-      putPretty(yytext, archivoPretty); /*el ( */ 
+    }  
+    putPretty(yytext, archivoPretty); /*el ( */ 
 }
 
 void tokenRightBracket(FILE * archivoPretty){
+      if(anterior != SEMICOLON && anterior != RIGHT_BRACKET){
+        putPretty("\n", archivoPretty); 
+      }
+      if(banderaCase == 1){
+        
+        caseRBracket++; 
+      }
+      if(banderaCase == 1 && (caseRBracket > caseLBracket)){
+        
+        contador = contador - 2 ; 
+        caseLBracket = 0; 
+        caseRBracket = 0; 
+        banderaCase = 0; 
+      }
       contador = contador -2; /*Se restan dos espacios, porq la llave se pone un poquito antes*/
       generadorEspacios(contador, archivoPretty); /* espacios */ 
       putPretty(yytext, archivoPretty); /* el } */
       contador = contador-2; /* lo deja bien en identacion para lo que sigue */ 
-      putPretty("\n", archivoPretty); /* salto de linea */ 
+      anterior = ntoken; 
+      ntoken = nextToken(); 
+      banderaNOtoken = 1; 
+      if(ntoken != SEMICOLON){
+        putPretty("\n", archivoPretty); /* salto de linea */
+      }
+      //si es diferente de SEMICOLON si salta y este if lo hice por el caso struct {} ; 
 
 }
 
 void tokenColons(FILE * archivoPretty){
       putPretty(yytext, archivoPretty); 
-      putPretty("\n", archivoPretty); 
-      if(banderaCase == 1){
-        generadorEspacios(contador, archivoPretty);   
-      }
+      putPretty("\n", archivoPretty);   
       if (tramposo == 1){
         contador = contador - 4 ; 
         tramposo = 0; 
