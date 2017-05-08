@@ -47,9 +47,7 @@ dear; (char)lotte--;
 
         (char)*lie++;
 
-
-(char)*lie++, (char)*lie++; hell:0, (char)*lie;
-
+(char)*lie++ , (char)*lie++; hell:0, (char)*lie;
     get *out* (short)ly   -0-'R'-  get- 'a'^rested;
 
     do {auto*eroticism,

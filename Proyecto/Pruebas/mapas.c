@@ -382,7 +382,7 @@ void createTableDataFile(char Data[totalGen][totalGen][5],char header[totalGen][
   gtk_widget_show_all(windowTableData);
 }
 
-
+/*
 void on_btn_getFile_clicked() {
   //header = malloc(totalObjects * sizeof(char*));
   totalGen = countObjectsFiles (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER(g_filechooser_btn)));
@@ -393,7 +393,7 @@ void on_btn_getFile_clicked() {
   printf("Entrada Archivo\n");
   createTableDataFile(Data,header);
   gtk_widget_hide(windowInitial);
-}
+}*/
 
 void createArray(relation information[sizeArray]){
   int position = 0;
