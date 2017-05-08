@@ -73,7 +73,7 @@ int redireccionar(FILE * archivoPretty){
   if (ntoken == FOR || ntoken == IF|| ntoken == WHILE || ntoken == DO || ntoken == ELSE){
     tokenCondicionales(archivoPretty); 
   }
-  else if(ntoken == CASE){
+  else if(ntoken == CASE || ntoken == DEFAULT){
     tokenCase(archivoPretty); 
   }
   else if (ntoken == LEFT_BRACKET){
@@ -99,7 +99,7 @@ int redireccionar(FILE * archivoPretty){
 
 
 void tokensNormales(FILE * archivoPretty){
-      if((anterior == SEMICOLON && banderaParen == 0)|| anterior == RIGHT_BRACKET || anterior == COLON){ /*si antes habia un semicolon o }, 
+      if(((anterior == SEMICOLON && banderaParen == 0)|| anterior == RIGHT_BRACKET || anterior == COLON) && tramposo == 0){ /*si antes habia un semicolon o }, 
       di tengo q identar porq solo me dejaron en el inicio de la linea*/
         generadorEspacios(contador, archivoPretty); 
         putPretty(yytext, archivoPretty);
@@ -173,7 +173,7 @@ void tokenCondicionales(FILE * archivoPretty){
           putPretty("\n", archivoPretty); 
           contador = contador + 4 ; 
           generadorEspacios(contador, archivoPretty);
-          tramposo = 1; 
+          tramposo = tramposo + 1; 
           banderaNOtoken = 1;
         }
 
@@ -276,9 +276,12 @@ void tokenRightBracket(FILE * archivoPretty){
 void tokenColons(FILE * archivoPretty){
       putPretty(yytext, archivoPretty); 
       putPretty("\n", archivoPretty);   
-      if (tramposo == 1){
-        contador = contador - 4 ; 
-        tramposo = 0; 
+      if (tramposo > 0){
+        while(tramposo > 0){
+          contador = contador - 4 ; 
+          tramposo = 0; 
+        }
+ 
       }
 }
 
