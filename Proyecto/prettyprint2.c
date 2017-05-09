@@ -7,7 +7,7 @@ extern int yyleng;
 extern char* yytext;
 
 extern int tabs;
-static char espacios[20] = ""; /*String de espacios*/
+static char espacios[1000] = ""; /*String de espacios*/
 int contador = 0; /*Contador es espacios, encargado de ver cuántos espacios dejar*/
 #define espaciosLlave 2
 #define espaciosParentesis 1
@@ -25,6 +25,7 @@ int anterior= 0;
 int banderaIncludeDefine = 0; 
 int saltoInclude = 0; 
 int token = 0; 
+int banderaDefine = 0;
 int banderaParen = 0; 
 int caseLBracket = 0; 
 int caseRBracket = 0; 
@@ -72,7 +73,10 @@ void putPretty(char * text, FILE * archivoTemporal){
 //*************************************************************************
 
 int redireccionar(FILE * archivoPretty){
-  if (ntoken == FOR || ntoken == IF|| ntoken == WHILE || ntoken == DO || ntoken == ELSE){
+  if(ntoken == INCLUDE || ntoken == DEFINE || banderaIncludeDefine == 1){
+    tokenIncludeDefine(archivoPretty); 
+  }
+  else if (ntoken == FOR || ntoken == IF|| ntoken == WHILE || ntoken == DO || ntoken == ELSE){
     tokenCondicionales(archivoPretty); 
   }
   else if(ntoken == CASE || ntoken == DEFAULT){
@@ -90,9 +94,6 @@ int redireccionar(FILE * archivoPretty){
   else if (ntoken == SEMICOLON && banderaParen == 0){
     tokenColons(archivoPretty);
   }
-  else if(ntoken == INCLUDE || ntoken == DEFINE){
-    tokenIncludeDefine(archivoPretty); 
-  }
   else{
     tokensNormales(archivoPretty); 
   }
@@ -101,28 +102,32 @@ int redireccionar(FILE * archivoPretty){
 
 
 void tokensNormales(FILE * archivoPretty){
-      if(anterior != ELSE && ((anterior == SEMICOLON && banderaParen == 0)|| anterior == RIGHT_BRACKET || anterior == COLON)){ /*si antes habia un semicolon o }, 
+      if(anterior != ELSE && ((anterior == SEMICOLON && banderaParen == 0)|| anterior == RIGHT_BRACKET || (anterior == COLON && banderaCase == 1) || anterior == SLASH || saltoInclude == 1)){ /*si antes habia un semicolon o }, 
       di tengo q identar porq solo me dejaron en el inicio de la linea*/
-        
+        printf("ari");
+        if(saltoInclude == 1){
+          saltoInclude = 0;
+        } 
         generadorEspacios(contador, archivoPretty); 
         putPretty(yytext, archivoPretty);
+      
       }
       else if(anterior == DOT || anterior == PTR_OP || anterior == LEFT_BRACKET || anterior == LEFT_SBRACKET ||  ntoken == LEFT_SBRACKET || 
        anterior == LEFT_PARENTHESIS ||anterior == RIGHT_PARENTHESIS ||ntoken == RIGHT_PARENTHESIS || anterior == EXCLAMATION || ntoken == RIGHT_SBRACKET 
-       || anterior == BIT_AND || anterior == -1 || anterior == COLON || saltoInclude == 1 || anterior == INCLUDE 
-       || anterior == DEFINE || ntoken == DOT || ntoken == PTR_OP || ntoken == COMMA || anterior == ELSE){
-       if(saltoInclude == 1){
-        saltoInclude = 0;
-       } 
-       
+       || anterior == BIT_AND || anterior == -1 || anterior == COLON || anterior == INCLUDE 
+       || anterior == DEFINE || ntoken == DOT || ntoken == PTR_OP || ntoken == COMMA || anterior == ELSE ){
+       printf("arib");
+
         putPretty(yytext, archivoPretty); 
+      
       }
       else{
-        
+        printf("aribv");
         putPretty(" ", archivoPretty); 
         putPretty(yytext, archivoPretty);
       } 
 }
+
 
 void tokenCondicionales(FILE * archivoPretty){
      token = ntoken; 
@@ -137,6 +142,7 @@ void tokenCondicionales(FILE * archivoPretty){
       }
 
       putPretty(yytext, archivoPretty);
+      anterior = ntoken; 
       ntoken = nextToken(); 
       if(token != DO && (token != ELSE || (token == ELSE && ntoken == IF))){
         int contadorLParen = 1; 
@@ -173,16 +179,17 @@ void tokenCondicionales(FILE * archivoPretty){
       if (ntoken != LEFT_BRACKET){ /* si no tiene brackets, es uno de los tramposos, 
       entonces solo le pongo los espacios, copio la linea (hasta el semicolon) y seguimos con la vida*/
         if(banderaDo == 1 && token == WHILE){ /* este caso es para el while que sigue despues del do, el cual es como (...); */
-          putPretty(yytext, archivoPretty);              
+          putPretty(yytext, archivoPretty);  
+          printf("a");         
           putPretty("\n", archivoPretty); 
           banderaDo = 0; 
         }
         else{
+          printf("b");
           putPretty("\n", archivoPretty); 
           contador = contador + 4 ;
           if(ntoken != FOR && ntoken != IF && ntoken != WHILE && ntoken != DO && token != ELSE && ntoken != SWITCH){
             generadorEspacios(contador, archivoPretty);
-            
           }
           
           tramposos[iActual] = tramposos[iActual] + 1; 
@@ -220,6 +227,7 @@ void tokenCase(FILE * archivoPretty){
         contador = contador + 4; 
         banderaNOtoken =1 ;
         putPretty("\n", archivoPretty); 
+        printf("c");
       }  
       
 }
@@ -238,10 +246,12 @@ void tokenLeftBracket(FILE * archivoPretty, int tipo){
       preste atencion, ahora tiene q identar*/
       contador = contador + 2 ; /*Se suman dos espacios para el GNU style*/ 
       putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
+      printf("d");
       generadorEspacios(contador, archivoPretty);  /*Se colocan los espacios*/
       putPretty(yytext, archivoPretty); /*Se coloca la llave que abre*/ 
       contador = contador + 2;  /*Se suman otros dos espacios para que ya el resto bn identado*/
       putPretty("\n", archivoPretty);/*Se coloca un salto de línea*/
+      printf("f");
       banderaNOtoken = 1; 
       anterior = ntoken; 
       ntoken = nextToken(); 
@@ -262,13 +272,12 @@ void tokenLeftParenthesis(FILE * archivoPretty){
 }
 
 void tokenRightBracket(FILE * archivoPretty){
-
       if(anterior != SEMICOLON && anterior != RIGHT_BRACKET){ 
         // si el anterior no es ; ni } indica que debe haber un salto de linea 
         putPretty("\n", archivoPretty); 
+        printf("e");
       }
       if(banderaCase == 1){
-        
         caseRBracket++; 
       }
       if(banderaCase == 1 && (caseRBracket > caseLBracket)){
@@ -296,14 +305,24 @@ void tokenRightBracket(FILE * archivoPretty){
       banderaNOtoken = 1; 
       if(ntoken != SEMICOLON){
         putPretty("\n", archivoPretty); /* salto de linea */
+        printf("g");
       }
       //si es diferente de SEMICOLON si salta y este if lo hice por el caso struct {} ; 
 
 }
 
 void tokenColons(FILE * archivoPretty){
+      if(anterior == SEMICOLON && ntoken == SEMICOLON){
+        generadorEspacios(contador, archivoPretty);
+      }
       putPretty(yytext, archivoPretty); 
-      putPretty("\n", archivoPretty);   
+      
+
+      if((ntoken == COLON && banderaCase ==1) || ntoken == SEMICOLON){
+        putPretty("\n", archivoPretty);    
+        printf("h"); 
+      }
+      
       if (tramposo > 0){
         while(tramposos[iActual] > 0){
           contador = contador - 4 ; 
@@ -315,25 +334,37 @@ void tokenColons(FILE * archivoPretty){
 }
 
 void tokenIncludeDefine(FILE * archivoPretty){
-      banderaIncludeDefine = 1; 
+      banderaIncludeDefine = 1;
+      if(ntoken == DEFINE || ntoken == INCLUDE){
+        generadorEspacios(contador,archivoPretty);   
+      }
+
+
       putPretty(yytext, archivoPretty); 
       putPretty(" ", archivoPretty); 
 }
 
 int prettyprintGNU(FILE * archivoPretty){	
-    anterior = -1; 
+    anterior = -1;
     ntoken = nextToken();
-
     while(ntoken) {
       if (endline==0){
           if(banderaIncludeDefine == 1){
-            putPretty("\n", archivoPretty); 
-            saltoInclude = 1; 
+      
+              putPretty("\n", archivoPretty);
+              printf("i");   
+    
+            
+            saltoInclude = 1;
             banderaIncludeDefine = 0; 
+            anterior = ntoken; 
+            ntoken = nextToken(); 
           }
             endline=1;
-      } 
-
+        
+          
+      }
+      
       if (banderaNOtoken == 1){
         banderaNOtoken = 0; 
       }
@@ -373,7 +404,7 @@ int redireccionarBSD(FILE * archivoPretty){
   else if ((ntoken == SEMICOLON && banderaParen == 0)|| (ntoken == COLON && banderaCase == 1)){
     tokenColonsBSD(archivoPretty);
   }
-  else if(ntoken == INCLUDE || ntoken == DEFINE){
+  else if(ntoken == INCLUDE || ntoken == DEFINE || banderaIncludeDefine == 1){
     tokenIncludeDefineBSD(archivoPretty); 
   }
   else{
