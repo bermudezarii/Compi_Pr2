@@ -13,7 +13,7 @@
 
 
 %}
-%token LITERAL INCLUDE DEFINE
+%token LITERAL INCLUDE DEFINE SLASH
 %token LEFT_BRACKET RIGHT_BRACKET COMMA LEFT_PARENTHESIS RIGHT_PARENTHESIS RIGHT_SBRACKET LEFT_SBRACKET SEMICOLON COLON EXCLAMATION PRIME INTERROGATION UP_ARROW DOT
 %token BIT_AND BIT_OR
 %token COMMENT
@@ -43,6 +43,7 @@ primary_expression
 	| INTEGER {printf("%d con %s  primary_expression: INTEGER FINAL\n",linea, gramaticas );}
 	| primary_expression LITERAL {printf("%d con %s  LITERAL FINAL\n",linea, gramaticas );}
 	| LEFT_PARENTHESIS expression RIGHT_PARENTHESIS primary_expression {printf("%d con %s  LITERAL FINAL\n",linea, gramaticas );}
+	| primary_expression SLASH primary_expression
 
 	;
 
@@ -361,6 +362,8 @@ pointer_type
 	: MUL {printf("%d con %s  pointer_type: MUL\n",linea,gramaticas);}
 	| BIT_AND {printf("%d con %s  pointer_type: BIT_AND\n",linea,gramaticas);}
 	| MUL PRIME {printf("%d con %s  pointer_type: MUL\n",linea,gramaticas);}
+	| MUL INC_OP {printf("%d con %s  pointer_type: MUL\n",linea,gramaticas);}
+	| MUL DEC_OP
 	| BIT_AND PRIME {printf("%d con %s  pointer_type: BIT_AND\n",linea,gramaticas);}
 	;
 
@@ -458,13 +461,15 @@ compound_statement
 
 declaration_list
 	: declaration {printf("%d con %s  declaration_list: declaration\n",linea, gramaticas );}
+	
 	| declaration_list declaration {printf("%d con %s  declaration_list: declaration_list declaration\n",linea, gramaticas);}
 	| declaration_list statement_list {printf("%d con %s  declaration_list: declaration_list statement_list\n",linea, gramaticas);}
 	;
 
 statement_list
 	: statement {printf("%d con %s  statement_list: statement\n",linea, gramaticas );}
-	| statement DEFINE define {printf("%d con %s  external_declaration: statement DEFINE define\n",linea, gramaticas);}
+	| DEFINE define
+	| statement_list DEFINE define {memset(gramaticas,0,sizeof(gramaticas)); printf("%d con %s  external_declaration: DEFINE define\n",linea, gramaticas);}
 	| statement_list statement {printf("%d con %s  statement_list: statement_list statement\n",linea, gramaticas);}
 	| statement_list declaration_list {printf("%d con %s  statement_list: statement_list declaration_list\n",linea, gramaticas);}
 	;
@@ -512,7 +517,7 @@ translation_unit
 external_declaration
 	: function_definition {printf("%d con %s  external_declaration: function_definition\n",linea, gramaticas);}
 	| declaration {printf("%d con %s  external_declaration: declaration\n",linea, gramaticas);}
-	| DEFINE define {memset(gramaticas,0,sizeof(gramaticas)); printf("%d con %s  external_declaration: DEFINE define\n",linea, gramaticas);}
+	| DEFINE  define {memset(gramaticas,0,sizeof(gramaticas)); printf("%d con %s  external_declaration: DEFINE define\n",linea, gramaticas);}
 	| INCLUDE LITERAL {memset(gramaticas,0,sizeof(gramaticas));printf("%d con %s  external_declaration: INCLUDE LITERALn\n",linea, gramaticas);}
 	| INCLUDE LESS IDENTIFIER DOT IDENTIFIER GREATER{memset(gramaticas,0,sizeof(gramaticas));printf("%d con %s  external_declaration: INCLUDE LITERALn\n",linea, gramaticas);}
 	| INCLUDE LESS 	IDENTIFIER DIV IDENTIFIER DOT IDENTIFIER GREATER{memset(gramaticas,0,sizeof(gramaticas));printf("%d con %s  external_declaration: INCLUDE LITERALn\n",linea, gramaticas);}
@@ -522,12 +527,15 @@ external_declaration
 
 	;
 define
-	: '\n' {printf("Sigue");}
-	| define_options define {printf("%d con %s  define: IDENTIFIER define\n",linea, gramaticas);}
+	: '\n' {printf("%d con %s  define: define_enter\n",linea, gramaticas);}
+	| define_options define
 	;
+
+
 
 define_options 
 : LITERAL
+| SLASH
 | LEFT_BRACKET
 | RIGHT_BRACKET
 | COMMA

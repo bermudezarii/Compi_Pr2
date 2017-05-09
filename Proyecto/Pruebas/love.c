@@ -1,107 +1,107 @@
 char*lie;
 
-        double time, me= !0XFACE,
+  double time, me= !0XFACE,
 
-        not; int rested,   get, out;
+  not; int rested,   get, out;
 
-        main(ly, die) char ly, **die ;{
+  main(ly, die) char ly, **die ;{
 
-            signed char lotte,
+      signed char lotte,
 
 
 dear; (char)lotte--;
 
-        for(get= !me;; not){
+  for(get= !me;; not){
 
-        1 -  out & out ;lie;{
+  1 -  out & out ;lie;{
 
-        char lotte, my= dear,
+  char lotte, my= dear,
 
-        **let= !!me *!not+ ++die;
+  **let= !!me *!not+ ++die;
 
-            (char*)(lie=
+      (char*)(lie=
 
 
 "The gloves are OFF this time, I detest you, snot\n\0sed GEEK!");
 
-        do {not= *lie++ & 0xF00L* !me;
+  do {not= *lie++ & 0xF00L* !me;
 
-        #define love (char*)lie -
+  #define love (char*)lie -
 
-        love 1s *!(not= atoi(let
+  love 1 *!(not= atoi(let
 
-        [get -me?
+  [get -me?
 
-            (char)lotte-
+      (char)lotte-
 
 
 (char)lotte: my- *love -
+  
+  'I'  -  *love -  'U' -
 
-        'I'  -  *love -  'U' -
+  'I'  -  (long)  - 4 - 'U' ])- !!
+  
+  (time  =out=  'a'));} while( my - dear
 
-        'I'  -  (long)  - 4 - 'U' ])- !!
+  && 'I'-1l  -get-  'a'); break;}}
 
-        (time  =out=  'a'));} while( my - dear
-
-        && 'I'-1l  -get-  'a'); break;}}
-
-            (char)*lie++;
+      (char)*lie++;
 
 
 (char)*lie++, (char)*lie++; hell:0, (char)*lie;
 
-        get *out* (short)ly   -0-'R'-  get- 'a'^rested;
+  get *out* (short)ly   -0-'R'-  get- 'a'^rested;
 
-        do {auto*eroticism, 
+  do {auto*eroticism,
 
-        that; puts(*( out
+  that; puts(*( out
 
-            - 'c'
-
+      - 'c'
+  
 -('P'-'S') +die+ -2 ));}while(!"you're at it");
 
 
 for (*((char*)&lotte)^=
 
-        (char)lotte; (love ly) [(char)++lotte+
+  (char)lotte; (love ly) [(char)++lotte+
 
-        !!0xBABE];){ if ('I' -lie[ 2 +(char)lotte]){ 'I'-1l ***die; }
+  !!0xBABE];){ if ('I' -lie[ 2 +(char)lotte]){ 'I'-1l ***die; }
 
-        else{ if ('I' * get *out* ('I'-1l **die[ 2 ])) *((char*)&lotte) -=
+  else{ if ('I' * get *out* ('I'-1l **die[ 2 ])) *((char*)&lotte) -=
 
-        '4' - ('I'-1l); not; for(get=!
+  '4' - ('I'-1l); not; for(get=!
 
 
 get; !out; (char)*lie  &  0xD0- !not) return!!
 
-        (char)lotte;}
+  (char)lotte;}
 
 
 (char)lotte;
 
-        do{ not* putchar(lie [out
-        
-        *!not* !!me +(char)lotte]);
-            
-        not; for(;!'a';);}while(
+  do{ not* putchar(lie [out
 
-            love (char*)lie);{
+  *!not* !!me +(char)lotte]);
+
+  not; for(;!'a';);}while(
+
+      love (char*)lie);{
 
 
 register this; switch( (char)lie
 
-        [(char)lotte] -1s *!out) {
+  [(char)lotte] -1 *!out) {
 
-        char*les, get= 0xFF, my; case' ':
+  char*les, get= 0xFF, my; case' ':
 
-        *((char*)&lotte) += 15; !not +(char)*lie*'s';
+  *((char*)&lotte) += 15; !not +(char)*lie*'s';
 
-        this +1s+ not; default: 0xF +(char*)lie;}}}
+  this +1+ not; default: 0xF +(char*)lie;}}}
 
-        get - !out;
+  get - !out;
 
-        if (not--)
-            
-        goto hell;
+  if (not--)
 
-            exit( (char)lotte);}
+  goto hell;
+
+      exit( (char)lotte);}

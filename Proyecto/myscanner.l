@@ -7,6 +7,7 @@ int endline;
 int fdefine=1;
 char* gramaticas[500000];
 
+
 %}
 
 %%
@@ -57,6 +58,7 @@ L?'(\\.|[^\\'])+'	             											{strcat(gramaticas,yytext);strcat(gram
 [0-9]*"."[0-9]+([Ee][+-]?[0-9]+)?(f|F|l|L)?									{strcat(gramaticas,yytext);strcat(gramaticas," ");return CONSTANT;}
 [0-9]+"."[0-9]*([Ee][+-]?[0-9]+)?(f|F|l|L)?									{strcat(gramaticas,yytext);strcat(gramaticas," ");return CONSTANT;}
 
+\\[\n|\z|\s|\r]|\\            												{strcat(gramaticas,yytext);strcat(gramaticas," ");return SLASH;}
 "{"                       													{strcat(gramaticas,yytext);strcat(gramaticas," ");return LEFT_BRACKET;}
 "}"                       													{strcat(gramaticas,yytext);strcat(gramaticas," ");return RIGHT_BRACKET;}
 ","                       													{strcat(gramaticas,yytext);strcat(gramaticas," ");return COMMA;}

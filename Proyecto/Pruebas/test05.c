@@ -1,10 +1,10 @@
 /**??/
-/
+*/
 #define NCC 1701
 #define STARDATE 500000
 #define k 16309
 
-#
+
 
                       int C,p,t,J,a,m,e,s,T,K,i,r[k],_[k][2],c[k][2],f=NCC;
                     fd_set O,d,o;char g[8][k],*h,j[]="0\1&me\1&t&e\1TFTTJPO>"

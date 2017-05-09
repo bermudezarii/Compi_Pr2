@@ -70,30 +70,42 @@ int define(int ntoken){
 	int lineaactual=linea; 	
 	while(lineaactual==linea){
 
-		if(strcmp(variable,"")==0 && ntoken==IDENTIFIER){
+		if(ntoken==SLASH){
+		  printf("Entro a SLASH\n");
+		   ntoken=nextToken();
+		   printf("%s,%d\n",yytext,linea);
+		   if(strcmp(yytext,"\n")==0){
+		    	ntoken=nextToken();
+		   		printf("%s\n",yytext);}
+
+		   lineaactual=linea;
+		   strcat(identifiers,yytext);
+
+		}
+		else if(strcmp(variable,"")==0 && ntoken==IDENTIFIER &&  ntoken!=SLASH){
 		
 			variable=(char*)malloc(strlen(yytext));
 			strcpy(variable,yytext);
 			
 
 		}
-		else if(ntoken==INTEGER && strcmp(variable,"")!= 0 ){
+		else if(ntoken==INTEGER && strcmp(variable,"")!= 0 &&  ntoken!=SLASH ){
 			printf("Encontro entero\n");
 			char *value= (char*) malloc(strlen(yytext));
 			strcpy(value,yytext);
 			ntoken=nextToken();
-			if (ntoken==PLUS ||ntoken==MINUS||ntoken==DIV||ntoken==MUL){
+			if ((ntoken==PLUS ||ntoken==MINUS||ntoken==DIV||ntoken==MUL) &&  ntoken!=SLASH){
 				printf("Encontro operador\n");
 				char* operator=(char*)malloc(strlen(yytext));
                 strcpy(operator,yytext);
 				
 				ntoken=nextToken();
-				if(ntoken==INTEGER){;
+				if(ntoken==INTEGER &&  ntoken!=SLASH){;
 					printf("Encontro entero\n");
 		
 					char* tmpnum=constantfolding(value,operator,yytext);
 					strcat(identifiers, tmpnum);
-					strcat(identifiers, " ");
+					
 				
 
 
@@ -102,9 +114,8 @@ int define(int ntoken){
                     strcat(identifiers, value);
                     strcat(identifiers, " ");
                     strcat(identifiers, operator);
-                    strcat(identifiers, " ");
 		  			strcat(identifiers, yytext);
-		  			strcat(identifiers, " ");
+		  
 		  			position++;
 			
 
@@ -113,10 +124,9 @@ int define(int ntoken){
 			}else{
 			
 				strcat(identifiers, value);
-				strcat(identifiers, " ");
-				if(linea==lineaactual){
+				if(linea==lineaactual &&  ntoken!=SLASH){
 					strcat(identifiers, yytext);
-					strcat(identifiers, " ");
+			
 		  			
 		  		}
 		  		position++;
@@ -125,27 +135,29 @@ int define(int ntoken){
 
 			}
 		}
-		else if(strcmp(variable,"")!=0 && existeDefine(yytext)!=-1){
+		else if(strcmp(variable,"")!=0 && existeDefine(yytext)!=-1 &&  ntoken!=SLASH){
 
 			char* tmp[50000];
 			strcpy(tmp,defines[existeDefine(yytext)].vDefine);
 			strcat(identifiers,tmp);
-			strcat(identifiers, " ");
+			
 		
 
 		}		
-		else if(strcmp(variable,"")!=0){
+		else if(strcmp(variable,"")!=0 &&  ntoken!=SLASH){
 		  printf("Hola\n");
 		  printf("Valor6:%s\n",yytext);
 		  printf("%d\n", existeDefine(yytext));
 		  strcat(identifiers, yytext);
-		  strcat(identifiers, " ");
 		  position++;
     	 
 		}
 		if(lineaactual==linea){
 		
 		   ntoken=nextToken();
+		   if(ntoken!= SLASH){
+		   	 strcat(identifiers, " ");
+		   }
 		}
 
     }

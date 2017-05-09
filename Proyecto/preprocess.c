@@ -41,16 +41,23 @@ int preprocesador1(FILE* archivoActual,FILE* archivoTemporal){
     	}
     	else if (ntoken==IDENTIFIER && existeDefine(yytext)!=-1){
     		fputs(defines[existeDefine(yytext)].vDefine, archivoTemporal);
-    		fputs(" ", archivoTemporal);
+    		
             ntoken = nextToken();
+            if(ntoken!=SLASH){
+                fputs(" ", archivoTemporal);
+            }
 
     	}
-    	
+    	else if(ntoken==SLASH){
+            ntoken = nextToken();
+        }
         else{
             
             fputs(yytext, archivoTemporal);
-            fputs(" ", archivoTemporal);
             ntoken = nextToken();
+            if(ntoken!=SLASH){
+                fputs(" ", archivoTemporal);
+            }
         }
     	
         
