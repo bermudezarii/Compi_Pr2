@@ -103,7 +103,7 @@ int redireccionar(FILE * archivoPretty){
 void tokensNormales(FILE * archivoPretty){
       if(anterior != ELSE && ((anterior == SEMICOLON && banderaParen == 0)|| anterior == RIGHT_BRACKET || anterior == COLON)){ /*si antes habia un semicolon o }, 
       di tengo q identar porq solo me dejaron en el inicio de la linea*/
-        printf("sera esto D:\n");
+        
         generadorEspacios(contador, archivoPretty); 
         putPretty(yytext, archivoPretty);
       }
@@ -114,11 +114,11 @@ void tokensNormales(FILE * archivoPretty){
        if(saltoInclude == 1){
         saltoInclude = 0;
        } 
-       printf("d");
+       
         putPretty(yytext, archivoPretty); 
       }
       else{
-        printf("f");
+        
         putPretty(" ", archivoPretty); 
         putPretty(yytext, archivoPretty);
       } 
@@ -132,7 +132,7 @@ void tokenCondicionales(FILE * archivoPretty){
       }
 
       if(((anterior != LEFT_BRACKET && anterior != ELSE )|| (anterior == RIGHT_BRACKET || anterior == SEMICOLON))){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
-        printf("a"); 
+        
         generadorEspacios(contador, archivoPretty); 
       }
 
@@ -148,9 +148,9 @@ void tokenCondicionales(FILE * archivoPretty){
           anterior = ntoken; 
           ntoken = nextToken();   
         }
-        printf("b");
+        
         putPretty(" ", archivoPretty);
-        printf("c");
+        
         putPretty(yytext, archivoPretty); 
         anterior = ntoken; 
         ntoken = nextToken(); 
@@ -182,7 +182,7 @@ void tokenCondicionales(FILE * archivoPretty){
           contador = contador + 4 ;
           if(ntoken != FOR && ntoken != IF && ntoken != WHILE && ntoken != DO && token != ELSE && ntoken != SWITCH){
             generadorEspacios(contador, archivoPretty);
-            printf("no se porque entra aqui, %s lol", yytext);
+            
           }
           
           tramposos[iActual] = tramposos[iActual] + 1; 
