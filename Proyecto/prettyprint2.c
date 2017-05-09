@@ -337,6 +337,8 @@ void tokenIncludeDefine(FILE * archivoPretty){
       banderaIncludeDefine = 1;
       if(ntoken == DEFINE || ntoken == INCLUDE){
         generadorEspacios(contador,archivoPretty);   
+        if(ntoken == DEFINE)
+          banderaDefine = 1; 
       }
 
 
@@ -357,8 +359,11 @@ int prettyprintGNU(FILE * archivoPretty){
             
             saltoInclude = 1;
             banderaIncludeDefine = 0; 
-            anterior = ntoken; 
-            ntoken = nextToken(); 
+            if(banderaDefine == 1){
+              anterior = ntoken; 
+              ntoken = nextToken();  
+              banderaDefine =0 ;             
+            }
           }
             endline=1;
         
