@@ -180,15 +180,15 @@ void tokenCondicionales(FILE * archivoPretty){
       entonces solo le pongo los espacios, copio la linea (hasta el semicolon) y seguimos con la vida*/
         if(banderaDo == 1 && token == WHILE){ /* este caso es para el while que sigue despues del do, el cual es como (...); */
           putPretty(yytext, archivoPretty);  
-          printf("a");         
+          //printf("a");         
           putPretty("\n", archivoPretty); 
           banderaDo = 0; 
         }
         else{
-          printf("b");
+          //printf("b");
           putPretty("\n", archivoPretty); 
           contador = contador + 4 ;
-          if(ntoken != FOR && ntoken != IF && ntoken != WHILE && ntoken != DO && token != ELSE && ntoken != SWITCH){
+          if(ntoken != FOR && ntoken != IF && ntoken != WHILE && ntoken != DO  && ntoken != SWITCH){
             generadorEspacios(contador, archivoPretty);
           }
           
@@ -246,12 +246,12 @@ void tokenLeftBracket(FILE * archivoPretty, int tipo){
       preste atencion, ahora tiene q identar*/
       contador = contador + 2 ; /*Se suman dos espacios para el GNU style*/ 
       putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
-      printf("d");
+      //printf("d");
       generadorEspacios(contador, archivoPretty);  /*Se colocan los espacios*/
       putPretty(yytext, archivoPretty); /*Se coloca la llave que abre*/ 
       contador = contador + 2;  /*Se suman otros dos espacios para que ya el resto bn identado*/
       putPretty("\n", archivoPretty);/*Se coloca un salto de línea*/
-      printf("f");
+      //printf("f");
       banderaNOtoken = 1; 
       anterior = ntoken; 
       ntoken = nextToken(); 
@@ -275,7 +275,7 @@ void tokenRightBracket(FILE * archivoPretty){
       if(anterior != SEMICOLON && anterior != RIGHT_BRACKET){ 
         // si el anterior no es ; ni } indica que debe haber un salto de linea 
         putPretty("\n", archivoPretty); 
-        printf("e");
+        //printf("e");
       }
       if(banderaCase == 1){
         caseRBracket++; 
@@ -305,7 +305,7 @@ void tokenRightBracket(FILE * archivoPretty){
       banderaNOtoken = 1; 
       if(ntoken != SEMICOLON){
         putPretty("\n", archivoPretty); /* salto de linea */
-        printf("g");
+        //printf("g");
       }
       //si es diferente de SEMICOLON si salta y este if lo hice por el caso struct {} ; 
 
@@ -320,7 +320,7 @@ void tokenColons(FILE * archivoPretty){
 
       if((ntoken == COLON && banderaCase ==1) || ntoken == SEMICOLON){
         putPretty("\n", archivoPretty);    
-        printf("h"); 
+        //printf("h"); 
       }
       
       if (tramposo > 0){
@@ -354,7 +354,7 @@ int prettyprintGNU(FILE * archivoPretty){
           if(banderaIncludeDefine == 1){
       
               putPretty("\n", archivoPretty);
-              printf("i");   
+              //printf("i");   
     
             
             saltoInclude = 1;
