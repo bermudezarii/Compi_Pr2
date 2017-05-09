@@ -19,6 +19,7 @@ int banderaDo = 0;
 int banderaCase = 0;
 int banderaNOtoken = 0;  
 int tramposo= 0; 
+int banderaTramposoCondicional = 0; 
 int ntoken = 0;
 int anterior= 0; 
 int banderaIncludeDefine = 0; 
@@ -27,7 +28,8 @@ int token = 0;
 int banderaParen = 0; 
 int caseLBracket = 0; 
 int caseRBracket = 0; 
-
+int tramposos[20]; 
+int iActual = 0; /* esta variable ayuda a ver por donde va del array de tramposos :3 */
 void prettyprintSelect(int value, FILE * archivoPretty){
 	printf("Entro con:%d\n", value);
 	switch(value){
@@ -99,21 +101,24 @@ int redireccionar(FILE * archivoPretty){
 
 
 void tokensNormales(FILE * archivoPretty){
-      if(((anterior == SEMICOLON && banderaParen == 0)|| anterior == RIGHT_BRACKET || anterior == COLON) && tramposo == 0){ /*si antes habia un semicolon o }, 
+      if(anterior != ELSE && ((anterior == SEMICOLON && banderaParen == 0)|| anterior == RIGHT_BRACKET || anterior == COLON)){ /*si antes habia un semicolon o }, 
       di tengo q identar porq solo me dejaron en el inicio de la linea*/
+        printf("sera esto D:\n");
         generadorEspacios(contador, archivoPretty); 
         putPretty(yytext, archivoPretty);
       }
       else if(anterior == DOT || anterior == PTR_OP || anterior == LEFT_BRACKET || anterior == LEFT_SBRACKET ||  ntoken == LEFT_SBRACKET || 
-       anterior == LEFT_PARENTHESIS || ntoken == RIGHT_PARENTHESIS || anterior == EXCLAMATION || ntoken == RIGHT_SBRACKET 
+       anterior == LEFT_PARENTHESIS ||anterior == RIGHT_PARENTHESIS ||ntoken == RIGHT_PARENTHESIS || anterior == EXCLAMATION || ntoken == RIGHT_SBRACKET 
        || anterior == BIT_AND || anterior == -1 || anterior == COLON || saltoInclude == 1 || anterior == INCLUDE 
-       || anterior == DEFINE || ntoken == DOT || ntoken == PTR_OP || ntoken == COMMA){
+       || anterior == DEFINE || ntoken == DOT || ntoken == PTR_OP || ntoken == COMMA || anterior == ELSE){
        if(saltoInclude == 1){
         saltoInclude = 0;
        } 
+       printf("d");
         putPretty(yytext, archivoPretty); 
       }
       else{
+        printf("f");
         putPretty(" ", archivoPretty); 
         putPretty(yytext, archivoPretty);
       } 
@@ -126,7 +131,8 @@ void tokenCondicionales(FILE * archivoPretty){
         banderaDo = 1; 
       }
 
-      if((anterior != LEFT_BRACKET && anterior != ELSE )|| (anterior == RIGHT_BRACKET || anterior == SEMICOLON)){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
+      if(((anterior != LEFT_BRACKET && anterior != ELSE )|| (anterior == RIGHT_BRACKET || anterior == SEMICOLON))){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
+        printf("a"); 
         generadorEspacios(contador, archivoPretty); 
       }
 
@@ -142,7 +148,9 @@ void tokenCondicionales(FILE * archivoPretty){
           anterior = ntoken; 
           ntoken = nextToken();   
         }
+        printf("b");
         putPretty(" ", archivoPretty);
+        printf("c");
         putPretty(yytext, archivoPretty); 
         anterior = ntoken; 
         ntoken = nextToken(); 
@@ -171,8 +179,13 @@ void tokenCondicionales(FILE * archivoPretty){
         }
         else{
           putPretty("\n", archivoPretty); 
-          contador = contador + 4 ; 
-          generadorEspacios(contador, archivoPretty);
+          contador = contador + 4 ;
+          if(ntoken != FOR && ntoken != IF && ntoken != WHILE && ntoken != DO && token != ELSE && ntoken != SWITCH){
+            generadorEspacios(contador, archivoPretty);
+            printf("no se porque entra aqui, %s lol", yytext);
+          }
+          
+          tramposos[iActual] = tramposos[iActual] + 1; 
           tramposo = tramposo + 1; 
           banderaNOtoken = 1;
         }
@@ -188,7 +201,7 @@ void tokenCase(FILE * archivoPretty){
       banderaCase = 0; 
       caseLBracket = 0; 
       caseRBracket = 0; 
-      contador = contador - 2;  
+      contador = contador - 4;  
     }
     while(ntoken != COLON){ //case (pone esta parte)
         tokensNormales(archivoPretty); 
@@ -204,7 +217,7 @@ void tokenCase(FILE * archivoPretty){
       else{
         
         banderaCase = 1;
-        contador = contador + 2; 
+        contador = contador + 4; 
         banderaNOtoken =1 ;
         putPretty("\n", archivoPretty); 
       }  
@@ -213,6 +226,10 @@ void tokenCase(FILE * archivoPretty){
 
 
 void tokenLeftBracket(FILE * archivoPretty, int tipo){
+      if(tramposo > 0){
+        iActual++; 
+        tramposos[iActual] = 0; 
+      }
       if(banderaCase == 1){
         
         caseLBracket++; 
@@ -233,11 +250,11 @@ void tokenLeftBracket(FILE * archivoPretty, int tipo){
 }
 
 void tokenLeftParenthesis(FILE * archivoPretty){
-    if((anterior == COLON && banderaParen == 0)|| (anterior == SEMICOLON && banderaParen ==0)){
+    if((anterior == COLON && banderaParen == 0)|| (anterior == SEMICOLON && banderaParen ==0) || anterior == RIGHT_BRACKET){
       generadorEspacios(contador, archivoPretty);
     }
     else{
-      if(anterior != LEFT_PARENTHESIS){
+      if(anterior != LEFT_PARENTHESIS && tramposo== 0){
         putPretty(" ", archivoPretty); /* se le pone el espacio*/
       }
     }  
@@ -245,7 +262,9 @@ void tokenLeftParenthesis(FILE * archivoPretty){
 }
 
 void tokenRightBracket(FILE * archivoPretty){
-      if(anterior != SEMICOLON && anterior != RIGHT_BRACKET){
+
+      if(anterior != SEMICOLON && anterior != RIGHT_BRACKET){ 
+        // si el anterior no es ; ni } indica que debe haber un salto de linea 
         putPretty("\n", archivoPretty); 
       }
       if(banderaCase == 1){
@@ -254,7 +273,7 @@ void tokenRightBracket(FILE * archivoPretty){
       }
       if(banderaCase == 1 && (caseRBracket > caseLBracket)){
         
-        contador = contador - 2 ; 
+        contador = contador - 4 ; 
         caseLBracket = 0; 
         caseRBracket = 0; 
         banderaCase = 0; 
@@ -262,6 +281,15 @@ void tokenRightBracket(FILE * archivoPretty){
       contador = contador -2; /*Se restan dos espacios, porq la llave se pone un poquito antes*/
       generadorEspacios(contador, archivoPretty); /* espacios */ 
       putPretty(yytext, archivoPretty); /* el } */
+      if(tramposo > 0 && iActual > 0){
+        iActual--; 
+        while(tramposos[iActual] > 0){
+          contador = contador - 4 ; 
+          tramposo = tramposo - 1;
+          tramposos[iActual] = tramposos[iActual] - 1;  
+        }
+      }
+      
       contador = contador-2; /* lo deja bien en identacion para lo que sigue */ 
       anterior = ntoken; 
       ntoken = nextToken(); 
@@ -277,11 +305,12 @@ void tokenColons(FILE * archivoPretty){
       putPretty(yytext, archivoPretty); 
       putPretty("\n", archivoPretty);   
       if (tramposo > 0){
-        while(tramposo > 0){
+        while(tramposos[iActual] > 0){
           contador = contador - 4 ; 
-          tramposo = 0; 
+          tramposo = tramposo - 1;
+          tramposos[iActual] = tramposos[iActual] - 1;  
         }
- 
+        
       }
 }
 
