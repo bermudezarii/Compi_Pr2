@@ -116,13 +116,13 @@ void tokensNormales(FILE * archivoPretty){
        anterior == LEFT_PARENTHESIS ||anterior == RIGHT_PARENTHESIS ||ntoken == RIGHT_PARENTHESIS || anterior == EXCLAMATION || ntoken == RIGHT_SBRACKET 
        || anterior == BIT_AND || anterior == -1 || anterior == COLON || anterior == INCLUDE 
        || anterior == DEFINE || ntoken == DOT || ntoken == PTR_OP || ntoken == COMMA || anterior == ELSE ){
-       printf("arib");
+       //printf("arib");
 
         putPretty(yytext, archivoPretty); 
       
       }
       else{
-        printf("aribv");
+        //printf("aribv");
         putPretty(" ", archivoPretty); 
         putPretty(yytext, archivoPretty);
       } 
@@ -188,7 +188,7 @@ void tokenCondicionales(FILE * archivoPretty){
           //printf("b");
           putPretty("\n", archivoPretty); 
           contador = contador + 4 ;
-          if(ntoken != FOR && ntoken != IF && ntoken != WHILE && ntoken != DO  && ntoken != SWITCH){
+          if(ntoken != FOR && ntoken != IF && ntoken != WHILE && ntoken != DO && ntoken != ELSE && ntoken != SWITCH){
             generadorEspacios(contador, archivoPretty);
           }
           
@@ -354,7 +354,7 @@ int prettyprintGNU(FILE * archivoPretty){
           if(banderaIncludeDefine == 1){
       
               putPretty("\n", archivoPretty);
-              //printf("i");   
+              printf("i");   
     
             
             saltoInclude = 1;
