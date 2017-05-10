@@ -144,7 +144,7 @@ int define(int ntoken){
 
 		}		
 		else if(strcmp(variable,"")!=0 &&  ntoken!=SLASH){
-		  printf("%d\n", existeDefine(yytext));
+
 		  strcat(identifiers, yytext);
 		  position++;
     	 
