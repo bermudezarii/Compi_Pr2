@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
             Se le indica a flex cuál es el archivo actual que se está leyendo
         */
         yyin = archivoEntrada; 
-		if(archivoEntrada && argc>=3){
+		if(archivoEntrada && argc>=5){
             if(argc>=4 && strcmp(argv[4],"S")==0){
                 preproceso=true;
                 memset(gramaticas,0,sizeof(gramaticas));
@@ -72,9 +72,10 @@ int main(int argc, char *argv[])
                 archivoEntrada  = fopen(argv[1], "r+");
                 archivoEntradaTem  = fopen(argv[1], "r+");
                 tmpfile = fopen("tmpfile.c", "r"); //Se llama a la función del preprocesador con el archivo de entrada
-                
-                if(strcmp(argv[4],"S")==0) yyin = tmpfile;
-                else yyin = archivoEntradaTem;
+                if(argc>=5){
+                    if(strcmp(argv[4],"S")==0) yyin = tmpfile;
+                    else yyin = archivoEntradaTem;
+                }
 
                 FILE *tmpPretty = fopen("tmpPretty.c", "w");
                 memset(gramaticas,0,sizeof(gramaticas));
