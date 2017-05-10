@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
             fclose(tmpfile);
             fclose(archivoEntrada);
             //fclose(tmpPretty); 
-            //remove("tmpfile.c");    
+            remove("tmpfile.c");    
 	    }else{
 	    	printf("El archivo ingresado no existe, verifique que esté bien escrito o bien no ingreso todos los parámetros.\n\n");
             printf("                **Para más información presione escriba ./parser y da ENTER.**\n");
