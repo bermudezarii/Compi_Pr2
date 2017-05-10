@@ -24,7 +24,7 @@ int preprocesador1(FILE* archivoActual,FILE* archivoTemporal){
 
    
     while(ntoken) {
-
+   
         if (endline==0){
             fputs("\n", archivoTemporal);
             endline=1;

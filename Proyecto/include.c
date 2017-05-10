@@ -49,14 +49,14 @@ bool existeInclude(char *include)
 
 
 void include(FILE* archivoActual,FILE* archivoTemporal, int ntoken){
-			printf("Entra al include. \n");
+	
 	        char *includeArreglado; //El valor del include sin los ""
             ntoken = nextToken(); //Se obtiene el siguiente token para evaluar 
             /*
                 Debido a que los define son literales
             */  
 
-            if(ntoken == 7){      
+            if(ntoken == LITERAL){      
                 
                 numIncludes++;
                 FILE* siguienteArchivo; //Se creará un nuevo archivo
@@ -87,8 +87,8 @@ void include(FILE* archivoActual,FILE* archivoTemporal, int ntoken){
                 */
 
                 else{
-                    printf("Inclusión duplicada de %s", includeArreglado); //Se notifica el error, revisar esta validación
+                    printf("Inclusión duplicada de %s\n", includeArreglado); //Se notifica el error, revisar esta validación
                 }
             }
-            printf("Salio: %d\n",ntoken);
+           
 }
