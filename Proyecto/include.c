@@ -49,7 +49,6 @@ bool existeInclude(char *include)
 
 
 void include(FILE* archivoActual,FILE* archivoTemporal, int ntoken){
-	        printf("Entro a include\n");
 	        char *includeArreglado; //El valor del include sin los ""
             ntoken = nextToken(); //Se obtiene el siguiente token para evaluar 
             /*
@@ -84,7 +83,7 @@ void include(FILE* archivoActual,FILE* archivoTemporal, int ntoken){
                         yyin =archivoActual; //Se le dice a flex cuál archivo se estará leyendo
                     }else 
                     {
-                        printf("El archivo de entrada de include no existe.\n");
+                        printf("**El archivo de entrada de include no existe.**\n");
                     }
 
                 }
