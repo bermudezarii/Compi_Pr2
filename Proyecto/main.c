@@ -80,8 +80,8 @@ int main(int argc, char *argv[])
                 FILE *tmpPretty = fopen("tmpPretty.c", "w");
                 memset(gramaticas,0,sizeof(gramaticas));
                 
-                if(strcmp(argv[3],"1")==0) prettyprintSelect(atoi(argv[2]), tmpPretty);
-                else prettyprintSelect(atoi(argv[2]), archivoEntrada);
+                if(strcmp(argv[3],"1")==0) prettyprintSelect(atoi(argv[2]), tmpPretty,"tmpPretty");
+                else prettyprintSelect(atoi(argv[2]), archivoEntrada, argv[1]);
                 
                 
                 //prettyprintSelect(atoi(argv[2]), tmpPretty);

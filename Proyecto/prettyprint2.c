@@ -31,24 +31,24 @@ int caseLBracket = 0;
 int caseRBracket = 0; 
 int tramposos[20]; 
 int iActual = 0; /* esta variable ayuda a ver por donde va del array de tramposos :3 */
-void prettyprintSelect(int value, FILE * archivoPretty){
-	printf("Entro con:%d\n", value);
+void prettyprintSelect(int value, FILE * archivoPretty, char*name){
+	printf("Entro con:%s\n", name);
 	switch(value){
 		case 0:
 			printf("GNU style\n");
-			prettyprintGNU(archivoPretty); 
+			prettyprintGNU(archivoPretty, name); 
 			break;		
 		case 1:
 			printf("BSD style\n");
-      prettyprintBSD(archivoPretty);
+      prettyprintBSD(archivoPretty, name);
 			break;
 		case 2:
 			printf("Tipo de Nosotros\n");
-      prettyprintAllman(archivoPretty);
+      prettyprintAllman(archivoPretty, name);
 			break;
 		default:
 			printf("GNU style\n");
-			prettyprintGNU(archivoPretty); 
+			prettyprintGNU(archivoPretty, name); 
 			break;
 	}
 }
@@ -346,7 +346,7 @@ void tokenIncludeDefine(FILE * archivoPretty){
       putPretty(" ", archivoPretty); 
 }
 
-int prettyprintGNU(FILE * archivoPretty){	
+int prettyprintGNU(FILE * archivoPretty, char*name){	
     anterior = -1;
     ntoken = nextToken();
     while(ntoken) {
@@ -381,7 +381,7 @@ int prettyprintGNU(FILE * archivoPretty){
        	
     }
     printf("asi queda prettyprintprinteado\n%s\n", prettyprint);
-    printf("**El código al que se le aplicó el Pretty Print estilo GNU, se encuentra en el archivo tmpPretty**\n");
+    printf("**El código al que se le aplicó el Pretty Print estilo GNU, se encuentra en el archivo %s**\n",name);
     return 0;
 }
 
@@ -662,7 +662,7 @@ void tokenIncludeDefineBSD(FILE * archivoPretty){
       putPretty(" ", archivoPretty); 
 }
 
-int prettyprintBSD(FILE * archivoPretty){ 
+int prettyprintBSD(FILE * archivoPretty, char*name){ 
     anterior = -1;
     ntoken = nextToken();
     while(ntoken) {
@@ -697,7 +697,7 @@ int prettyprintBSD(FILE * archivoPretty){
         
     }
     printf("asi queda prettyprintprinteado\n%s\n", prettyprint);
-    printf("**El código al que se le aplicó el Pretty Print estilo BSD, se encuentra en el archivo tmpPretty**\n");
+    printf("**El código al que se le aplicó el Pretty Print estilo BSD, se encuentra en el archivo %s**\n", name);
     return 0;
 }
 
@@ -978,7 +978,7 @@ void tokenIncludeDefineAllman(FILE * archivoPretty){
       putPretty(" ", archivoPretty); 
 }
 
-int prettyprintAllman(FILE * archivoPretty){ 
+int prettyprintAllman(FILE * archivoPretty, char*name){ 
     anterior = -1;
     ntoken = nextToken();
     while(ntoken) {
@@ -1013,7 +1013,7 @@ int prettyprintAllman(FILE * archivoPretty){
         
     }
     printf("asi queda prettyprintprinteado\n%s\n", prettyprint);
-    printf("**El código al que se le aplicó el Pretty Print estilo Allman, se encuentra en el archivo tmpPretty**\n");
+    printf("**El código al que se le aplicó el Pretty Print estilo Allman, se encuentra en el archivo %s**\n",name);
     return 0;
 }
 
