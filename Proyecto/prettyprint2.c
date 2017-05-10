@@ -381,6 +381,7 @@ int prettyprintGNU(FILE * archivoPretty){
        	
     }
     printf("asi queda prettyprintprinteado\n%s\n", prettyprint);
+    printf("**El código al que se le aplicó el Pretty Print estilo GNU, se encuentra en el archivo tmpPretty**\n");
     return 0;
 }
 
@@ -633,6 +634,7 @@ void tokenColonsBSD(FILE * archivoPretty){
       
 
       if((ntoken == COLON && banderaCase ==1) || ntoken == SEMICOLON){
+        
         putPretty("\n", archivoPretty);    
         //printf("h"); 
       }
@@ -695,6 +697,7 @@ int prettyprintBSD(FILE * archivoPretty){
         
     }
     printf("asi queda prettyprintprinteado\n%s\n", prettyprint);
+    printf("**El código al que se le aplicó el Pretty Print estilo BSD, se encuentra en el archivo tmpPretty**\n");
     return 0;
 }
 
@@ -1010,6 +1013,7 @@ int prettyprintAllman(FILE * archivoPretty){
         
     }
     printf("asi queda prettyprintprinteado\n%s\n", prettyprint);
+    printf("**El código al que se le aplicó el Pretty Print estilo Allman, se encuentra en el archivo tmpPretty**\n");
     return 0;
 }
 
