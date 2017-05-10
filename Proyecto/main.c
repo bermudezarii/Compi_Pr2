@@ -20,15 +20,16 @@ int main(int argc, char *argv[])
     */
 	
     if(argc == 1){
-        printf("\n                                    **INSTRUCCIONES**\n\n");
+        printf("\n                                          **INSTRUCCIONES**\n\n");
         printf("Para el funcionamiento del programa, este va a funcionar con 3 parámetros en donde el tercero es opcional.\n");
-        printf("-En donde el primero será la dirección del programa.\n");
-        printf("-En el segundo el tipo de prettyprint que desea. Del 0-2 se escoge el tipo siendo:\n");
-        printf("       *0: GNU style\n");
-        printf("       *1: BSD style\n");
-        printf("       *2: Allman style\n");
-        printf(" Tome en cuenta que por default esta el GNU style en caso de ingresar cualquier otro número.\n");
-        printf("-En el tercero si desea realizar el prepoceso o no, con una \"S\". Tome en cuenta que este es opcional y que por default esta inactivo.\n\n");
+        printf("    *En donde el primero será la dirección del programa.\n");
+        printf("    *En el segundo el tipo de prettyprint que desea. Del 0-2 se escoge el tipo siendo:\n");
+        printf("           *0: GNU style\n");
+        printf("           *1: BSD style\n");
+        printf("           *2: Allman style\n");
+        printf("        Tome en cuenta que por default esta el GNU style en caso de ingresar cualquier otro número.\n");
+        printf("    *En el tercero si desea realizar el Pretty Print en el archivo de origen o en uno nuevo llamado tmppretty y que por default esta en el archivo de origen.\n\n");
+        printf("    *En el cuarto si desea realizar el prepoceso o no, con una \"S\". Tome en cuenta que este es opcional y que por default esta inactivo.\n\n");
 
 
     }

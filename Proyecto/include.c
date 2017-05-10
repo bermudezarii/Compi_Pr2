@@ -17,10 +17,10 @@ int numIncludes = -1;      //Contador de los includes que se tendrán en el arra
     Función encargada de quitar los "" al literal del include
 */
 char *modificarInclude(char *include){
-    char *resultado;
-    memmove(include, include+1, strlen(include)-1);
-    include[strlen(include) - 2] = '\0';
-    return include;
+        char *resultado;
+        memmove(include, include+1, strlen(include)-1);
+        include[strlen(include) - 2] = '\0';
+         return include;   
 }
 
 /*
@@ -49,7 +49,7 @@ bool existeInclude(char *include)
 
 
 void include(FILE* archivoActual,FILE* archivoTemporal, int ntoken){
-	
+	        printf("Entro a include\n");
 	        char *includeArreglado; //El valor del include sin los ""
             ntoken = nextToken(); //Se obtiene el siguiente token para evaluar 
             /*
@@ -64,22 +64,28 @@ void include(FILE* archivoActual,FILE* archivoTemporal, int ntoken){
                 /*
                     Si el include es diferente al archivo que lo invocó
                 */
+
                 if(existeInclude(includeArreglado) == false){                    
                     includes[numIncludes] = includeArreglado; //Se agrega a la tabla
                     siguienteArchivo = fopen(includeArreglado, "r"); //Se pone en modo lectura, FALTA: función que quite los "" de un literal
-               
+              
                     /*
                         Se le indica a flex cuál es el archivo actual que se está leyendo
                     */
-                    yyin = siguienteArchivo;                   
-                    preprocesador1(siguienteArchivo,archivoTemporal); //Se llama de nuevo a la función, pero esta vez con el siguiente archivo incluído
-                    fclose(siguienteArchivo);
-                    /*
-                        Después de la llamada recursiva, se borra la inclusión
-                    */
-                    includes[numIncludes] = ""; 
-                    numIncludes--;
-                    yyin =archivoActual; //Se le dice a flex cuál archivo se estará leyendo
+                    if(siguienteArchivo){
+                        yyin = siguienteArchivo;                   
+                        preprocesador1(siguienteArchivo,archivoTemporal); //Se llama de nuevo a la función, pero esta vez con el siguiente archivo incluído
+                        fclose(siguienteArchivo);
+                        /*
+                            Después de la llamada recursiva, se borra la inclusión
+                        */
+                        includes[numIncludes] = ""; 
+                        numIncludes--;
+                        yyin =archivoActual; //Se le dice a flex cuál archivo se estará leyendo
+                    }else 
+                    {
+                        printf("El archivo de entrada de include no existe.\n");
+                    }
 
                 }
                 /*

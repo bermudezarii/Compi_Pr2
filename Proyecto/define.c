@@ -71,12 +71,12 @@ int define(int ntoken){
 	while(lineaactual==linea){
 
 		if(ntoken==SLASH){
-		  printf("Entro a SLASH\n");
+
 		   ntoken=nextToken();
-		   printf("%s,%d\n",yytext,linea);
+		
 		   if(strcmp(yytext,"\n")==0){
 		    	ntoken=nextToken();
-		   		printf("%s\n",yytext);}
+		   		}
 
 		   lineaactual=linea;
 		   strcat(identifiers,yytext);
@@ -90,18 +90,17 @@ int define(int ntoken){
 
 		}
 		else if(ntoken==INTEGER && strcmp(variable,"")!= 0 &&  ntoken!=SLASH ){
-			printf("Encontro entero\n");
+
 			char *value= (char*) malloc(strlen(yytext));
 			strcpy(value,yytext);
 			ntoken=nextToken();
 			if ((ntoken==PLUS ||ntoken==MINUS||ntoken==DIV||ntoken==MUL) &&  ntoken!=SLASH){
-				printf("Encontro operador\n");
+
 				char* operator=(char*)malloc(strlen(yytext));
                 strcpy(operator,yytext);
 				
 				ntoken=nextToken();
 				if(ntoken==INTEGER &&  ntoken!=SLASH){;
-					printf("Encontro entero\n");
 		
 					char* tmpnum=constantfolding(value,operator,yytext);
 					strcat(identifiers, tmpnum);
@@ -145,8 +144,6 @@ int define(int ntoken){
 
 		}		
 		else if(strcmp(variable,"")!=0 &&  ntoken!=SLASH){
-		  printf("Hola\n");
-		  printf("Valor6:%s\n",yytext);
 		  printf("%d\n", existeDefine(yytext));
 		  strcat(identifiers, yytext);
 		  position++;
@@ -162,7 +159,6 @@ int define(int ntoken){
 
     }
     
-    printf("Valores: %s\n",identifiers );
     defines[numDefines].palabra = (char*)malloc(strlen(variable));
     defines[numDefines].vDefine = (char*)malloc(strlen(identifiers));
     strcpy(defines[numDefines].palabra ,variable);
