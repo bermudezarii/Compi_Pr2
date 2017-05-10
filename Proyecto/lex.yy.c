@@ -1435,13 +1435,13 @@ case 93:
 /* rule 93 can match eol */
 YY_RULE_SETUP
 #line 112 "myscanner.l"
-{printf("%s\n",yytext);strcat(gramaticas,yytext);strcat(gramaticas," ");return LITERAL;}
+{strcat(gramaticas,yytext);strcat(gramaticas," ");return LITERAL;}
 	YY_BREAK
 case 94:
 /* rule 94 can match eol */
 YY_RULE_SETUP
 #line 113 "myscanner.l"
-{printf("%s\n",yytext);strcat(gramaticas,yytext);strcat(gramaticas," ");return LITERAL;}
+{strcat(gramaticas,yytext);strcat(gramaticas," ");return LITERAL;}
 	YY_BREAK
 case 95:
 /* rule 95 can match eol */
