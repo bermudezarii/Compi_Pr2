@@ -67,7 +67,11 @@ int main(int argc, char *argv[])
             if(banderaSyntaxError == 0){
                 fclose(archivoEntrada);     
                 archivoEntrada  = fopen(argv[1], "r");
-                yyin = archivoEntrada; 
+                tmpfile = fopen("tmpfile.c", "r"); //Se llama a la función del preprocesador con el archivo de entrada
+                
+                if(strcmp(argv[3],"S")==0) yyin = tmpfile;
+                else yyin = archivoEntrada;
+                
                 FILE *tmpPretty = fopen("tmpPretty.c", "w");
                 printf("este es gramaticas antes de pretty print:\n%s\n", gramaticas);
                 memset(gramaticas,0,sizeof(gramaticas));
