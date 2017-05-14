@@ -136,7 +136,7 @@ void tokenCondicionales(FILE * archivoPretty){
         banderaDo = 1; 
       }
 
-      if(((anterior != LEFT_BRACKET && anterior != ELSE )|| (anterior == RIGHT_BRACKET || anterior == SEMICOLON))){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
+      if(((anterior != LEFT_BRACKET  )|| (anterior == RIGHT_BRACKET || anterior == SEMICOLON))){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
         
         generadorEspacios(contador, archivoPretty); 
       }
@@ -474,7 +474,7 @@ void tokenCondicionalesBSD(FILE * archivoPretty){
         banderaDo = 1; 
       }
 
-      if(((anterior != LEFT_BRACKET && anterior != ELSE )|| (anterior == RIGHT_BRACKET || anterior == SEMICOLON))){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
+      if(((anterior != LEFT_BRACKET && anterior  )|| (anterior == RIGHT_BRACKET || anterior == SEMICOLON))){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
         
         generadorEspacios(contador, archivoPretty); 
       }
@@ -813,7 +813,7 @@ void tokenCondicionalesAllman(FILE * archivoPretty){
         banderaDo = 1; 
       }
 
-      if(((anterior != LEFT_BRACKET && anterior != ELSE )|| (anterior == RIGHT_BRACKET || anterior == SEMICOLON))){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
+      if(((anterior != LEFT_BRACKET)|| (anterior == RIGHT_BRACKET || anterior == SEMICOLON))){   /* esto indica si hay mas de dos ciclos para ponerle los campos respectivos*/
         
         generadorEspacios(contador, archivoPretty); 
       }
