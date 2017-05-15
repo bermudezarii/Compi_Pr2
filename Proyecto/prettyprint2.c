@@ -22,6 +22,7 @@ int tramposo= 0;
 int banderaTramposoCondicional = 0; 
 int ntoken = 0;
 int anterior= 0; 
+int siguiente = 0;
 int banderaIncludeDefine = 0; 
 int saltoInclude = 0; 
 int token = 0; 
@@ -461,7 +462,7 @@ void tokensNormalesBSD(FILE * archivoPretty){
       }
       else{
         
-        putPretty(" ", archivoPretty); 
+        //putPretty(" ", archivoPretty); 
         putPretty(yytext, archivoPretty);
       } 
 }
@@ -598,6 +599,13 @@ void tokenLeftBracketBSD(FILE * archivoPretty, int tipo){
         
         caseLBracket++; 
       }
+
+      if(anterior == SEMICOLON){
+         fseek(archivoPretty, -1, SEEK_END);
+         ftruncate(fileno(archivoPretty), ftell(archivoPretty));
+         //truncate(archivoPretty, 1);
+         //generadorEspacios(contador, archivoPretty);
+      }
       /* si encuentra un bracket q no implica antes un while, if o for es como 
       preste atencion, ahora tiene q identar*/
       contador = contador + 2 ; /*Se suman dos espacios para el GNU style*/ 
@@ -668,7 +676,7 @@ void tokenRightBracketBSD(FILE * archivoPretty){
 
 }
 
-void tokenColonsBSD(FILE * archivoPretty){
+void tokenColonsBSD(FILE * archivoPretty, FILE * archivo){
       if(anterior == SEMICOLON && ntoken == SEMICOLON){
         generadorEspacios(contador, archivoPretty);
       }
@@ -676,9 +684,31 @@ void tokenColonsBSD(FILE * archivoPretty){
       
 
       if((ntoken == COLON && banderaCase>=1) || ntoken == SEMICOLON){
-        putPretty("\n", archivoPretty);    
+        //siguiente = nextToken();
         
-      }
+        //if(ntoken == SEMICOLON && siguiente == LEFT_BRACKET){
+        //  generadorEspacios(2, archivoPretty);
+        //  putPretty(yytext, archivoPretty);
+        //  putPretty("\n", archivoPretty); 
+        //  contador = contador + 8; 
+          //anterior = SEMICOLON;
+
+
+        //}
+
+        //else{   
+          putPretty("\n", archivoPretty);
+          
+          
+        //  generadorEspacios(contador, archivoPretty);
+        //  anterior = SEMICOLON;
+        //  ntoken = siguiente;
+        //  redireccionarBSD(archivoPretty);
+          //putPretty(yytext, archivoPretty);   
+        //} 
+
+        
+      
       
       if (tramposo > 0){
         while(tramposos[iActual] > 0){
@@ -689,6 +719,8 @@ void tokenColonsBSD(FILE * archivoPretty){
         
       }
 }
+}
+
 
 void tokenIncludeDefineBSD(FILE * archivoPretty){
       banderaIncludeDefine = 1;
