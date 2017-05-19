@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h> 
+#include "latex.c"
 extern FILE * yyin;
 extern int yylex();
 extern int yylineno;
@@ -14,6 +15,7 @@ int contador = 0; /*Contador es espacios, encargado de ver cuántos espacios dej
 static char prettyprint[1000] = "";
 static char nuevo[1000][1000];
 static char viejo[1000][1000];
+// muchas banderas que nos ayudan a determinar casos para los prettyprint
 int ciclo = 0; 
 int banderaDo = 0; 
 int banderaCase = 0;
@@ -22,7 +24,6 @@ int tramposo= 0;
 int banderaTramposoCondicional = 0; 
 int ntoken = 0;
 int anterior= 0; 
-int siguiente = 0;
 int banderaIncludeDefine = 0; 
 int saltoInclude = 0; 
 int token = 0; 
@@ -33,42 +34,58 @@ int banderaPrimero = 0;
 int caseRBracket = 0; 
 int tramposos[20]; 
 int iActual = 0; /* esta variable ayuda a ver por donde va del array de tramposos :3 */
+//banderas para el beamer 
+int contadorBeamer = 0; 
+int banderaCuidadoEspacios = 0; 
+
+//los pasos de beamer 
+void stepsBeamer(int value, FILE * archivoPretty, char*name){
+  startBeamer(archivoPretty); 
+  addExplanation(archivoPretty); 
+  startListing(archivoPretty); 
+  prettyprintSelect(value, archivoPretty, name); 
+  endListing(archivoPretty); 
+  endBeamer(archivoPretty); 
+  printf("thanks lord\n");
+}
+
+
 void prettyprintSelect(int value, FILE * archivoPretty, char*name){
-	printf("Entro con:%s\n", name);
-	switch(value){
-		case 0:
-			printf("GNU style\n");
-			prettyprintGNU(archivoPretty, name); 
-			break;		
-		case 1:
-			printf("BSD style\n");
+  printf("Entro con:%s\n", name);
+  switch(value){
+    case 0:
+      printf("GNU style\n");
+      prettyprintGNU(archivoPretty, name); 
+      break;    
+    case 1:
+      printf("BSD style\n");
       prettyprintBSD(archivoPretty, name);
-			break;
-		case 2:
-			printf("Allman style\n");
+      break;
+    case 2:
+      printf("Allman style\n");
       prettyprintAllman(archivoPretty, name);
-			break;
-		default:
-			printf("GNU style\n");
-			prettyprintGNU(archivoPretty, name); 
-			break;
-	}
+      break;
+    default:
+      printf("GNU style\n");
+      prettyprintGNU(archivoPretty, name); 
+      break;
+  }
 }
 
 
 void generadorEspacios(int numero, FILE * archivoPretty){
-	memset(espacios, 0, sizeof(espacios));
-	for(int i = 1; i <= numero ; i++){
-		strcat(espacios,  " ");
-	}
+  memset(espacios, 0, sizeof(espacios));
+  for(int i = 1; i <= numero ; i++){
+    strcat(espacios,  " ");
+  }
   putPretty(espacios, archivoPretty); 
 }
 
 
 void putPretty(char * text, FILE * archivoTemporal){
-	fputs(text, archivoTemporal); 
-	//strcat(prettyprint, text); 
-	//printf("%s", text);
+  fputs(text, archivoTemporal); 
+  //strcat(prettyprint, text); 
+  //printf("%s", text);
 }
 
 /*Funciones para el pretty print estilo GNU*/
@@ -196,14 +213,17 @@ void tokenCondicionales(FILE * archivoPretty){
           putPretty(yytext, archivoPretty);  
              
           putPretty("\n", archivoPretty); 
+          contadorBeamer++;
           banderaDo = 0; 
         }
         else{
           
           putPretty("\n", archivoPretty); 
+          contadorBeamer++; 
           contador = contador + 4 ;
           if(ntoken != FOR && ntoken != IF && ntoken != WHILE && ntoken != DO && ntoken != ELSE && ntoken != SWITCH){
             generadorEspacios(contador, archivoPretty);
+            banderaCuidadoEspacios = 1; 
           }
           
           tramposos[iActual] = tramposos[iActual] + 1; 
@@ -247,6 +267,7 @@ void tokenCase(FILE * archivoPretty){
         contador = contador + 4; 
         banderaNOtoken =1 ;
         putPretty("\n", archivoPretty); 
+        contadorBeamer++; 
        
       }  
       
@@ -266,17 +287,22 @@ void tokenLeftBracket(FILE * archivoPretty, int tipo){
       preste atencion, ahora tiene q identar*/
       contador = contador + 2 ; /*Se suman dos espacios para el GNU style*/ 
       putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
+      contadorBeamer++; 
       
       generadorEspacios(contador, archivoPretty);  /*Se colocan los espacios*/
       putPretty(yytext, archivoPretty); /*Se coloca la llave que abre*/ 
       contador = contador + 2;  /*Se suman otros dos espacios para que ya el resto bn identado*/
       putPretty("\n", archivoPretty);/*Se coloca un salto de línea*/
-      
+      contadorBeamer++; 
+
       banderaNOtoken = 1; 
       anterior = ntoken; 
       ntoken = nextToken(); 
-      if(ntoken != RIGHT_BRACKET)
+      if(ntoken != RIGHT_BRACKET){
         generadorEspacios(contador, archivoPretty); /*espacios*/ 
+        banderaCuidadoEspacios = 1;
+      }
+        
 }
 
 void tokenLeftParenthesis(FILE * archivoPretty){
@@ -295,7 +321,7 @@ void tokenRightBracket(FILE * archivoPretty){
       if(anterior != SEMICOLON && anterior != RIGHT_BRACKET){ 
         // si el anterior no es ; ni } indica que debe haber un salto de linea 
         putPretty("\n", archivoPretty); 
-        
+        contadorBeamer++; 
       }
       if(banderaCase >= 1){
         caseRBracket++; 
@@ -327,7 +353,7 @@ void tokenRightBracket(FILE * archivoPretty){
       banderaNOtoken = 1; 
       if(ntoken != SEMICOLON){
         putPretty("\n", archivoPretty); /* salto de linea */
-        
+        contadorBeamer++; 
       }
       //si es diferente de SEMICOLON si salta y este if lo hice por el caso struct {} ; 
 
@@ -341,7 +367,8 @@ void tokenColons(FILE * archivoPretty){
       
 
       if((ntoken == COLON && banderaCase >=1) || ntoken == SEMICOLON){
-        putPretty("\n", archivoPretty);    
+        putPretty("\n", archivoPretty); 
+        contadorBeamer++;    
         
       }
       
@@ -368,7 +395,7 @@ void tokenIncludeDefine(FILE * archivoPretty){
       putPretty(" ", archivoPretty); 
 }
 
-int prettyprintGNU(FILE * archivoPretty, char*name){	
+int prettyprintGNU(FILE * archivoPretty, char*name){  
     anterior = -1;
     ntoken = nextToken();
     while(ntoken) {
@@ -376,7 +403,7 @@ int prettyprintGNU(FILE * archivoPretty, char*name){
           if(banderaIncludeDefine == 1){
       
               putPretty("\n", archivoPretty);
-    
+              contadorBeamer++; 
     
             
             saltoInclude = 1;
@@ -391,21 +418,31 @@ int prettyprintGNU(FILE * archivoPretty, char*name){
         
           
       }
-      
+      printf("contadorBeamer = %d\n", contadorBeamer);
       if (banderaNOtoken == 1){
         banderaNOtoken = 0; 
       }
+      if(contadorBeamer >= 13){
+        endListing(archivoPretty); 
+        startListing(archivoPretty); 
+        contadorBeamer = 0; 
+        if(banderaCuidadoEspacios == 1){
+          generadorEspacios(contador, archivoPretty); 
+        }
+      }
+      banderaCuidadoEspacios = 0; 
       redireccionar(archivoPretty);
       if(banderaNOtoken == 0){
         anterior = ntoken; /*guardo el anterior porque me ayuda a verificar ciertas cosas*/
         ntoken = nextToken(); /*como el i++ de nuestro ciclo*/
       }
-       	
+        
     }
     
     printf("**El código al que se le aplicó el Pretty Print estilo GNU, se encuentra en el archivo %s**\n",name);
     return 0;
 }
+
 
 //*************************************************************************
 
@@ -904,14 +941,17 @@ void tokenCondicionalesAllman(FILE * archivoPretty){
           putPretty(yytext, archivoPretty);  
                  
           putPretty("\n", archivoPretty); 
+          contadorBeamer++; 
           banderaDo = 0; 
         }
         else{
       
           putPretty("\n", archivoPretty); 
+          contadorBeamer++; 
           contador = contador + 4 ;
           if(ntoken != FOR && ntoken != IF && ntoken != WHILE && ntoken != DO && ntoken != ELSE && ntoken != SWITCH){
             generadorEspacios(contador, archivoPretty);
+            banderaCuidadoEspacios = 1; 
           }
           
           tramposos[iActual] = tramposos[iActual] + 1; 
@@ -954,7 +994,7 @@ void tokenCaseAllman(FILE * archivoPretty){
         contador = contador + 4; 
         banderaNOtoken =1 ;
         putPretty("\n", archivoPretty); 
-       
+        contadorBeamer++; 
       }  
       
 }
@@ -972,16 +1012,19 @@ void tokenLeftBracketAllman(FILE * archivoPretty, int tipo){
       /* si encuentra un bracket q no implica antes un while, if o for es como 
       preste atencion, ahora tiene q identar*/
       putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
+      contadorBeamer++; 
       generadorEspacios(contador, archivoPretty);  /*Se colocan los espacios*/
       putPretty(yytext, archivoPretty); /*Se coloca la llave que abre*/ 
       contador = contador + 4;  /*Se suman otros dos espacios para que ya el resto bn identado*/
       putPretty("\n", archivoPretty);/*Se coloca un salto de línea*/
-      
+      contadorBeamer++; 
+
       banderaNOtoken = 1; 
       anterior = ntoken; 
       ntoken = nextToken(); 
       if(ntoken != RIGHT_BRACKET)
         generadorEspacios(contador, archivoPretty); /*espacios*/ 
+        banderaCuidadoEspacios = 1; 
 }
 
 void tokenLeftParenthesisAllman(FILE * archivoPretty){
@@ -1000,6 +1043,7 @@ void tokenRightBracketAllman(FILE * archivoPretty){
       if(anterior != SEMICOLON && anterior != RIGHT_BRACKET){ 
         // si el anterior no es ; ni } indica que debe haber un salto de linea 
         putPretty("\n", archivoPretty); 
+        contadorBeamer++; 
         
       }
       if(banderaCase >= 1){
@@ -1031,6 +1075,7 @@ void tokenRightBracketAllman(FILE * archivoPretty){
       banderaNOtoken = 1; 
       if(ntoken != SEMICOLON){
         putPretty("\n", archivoPretty); /* salto de linea */
+        contadorBeamer++;
         
       }
       //si es diferente de SEMICOLON si salta y este if lo hice por el caso struct {} ; 
@@ -1046,7 +1091,7 @@ void tokenColonsAllman(FILE * archivoPretty){
 
       if((ntoken == COLON && banderaCase>=1) || ntoken == SEMICOLON){
         putPretty("\n", archivoPretty);    
-        
+        contadorBeamer++; 
       }
       
       if (tramposo > 0){
@@ -1080,7 +1125,7 @@ int prettyprintAllman(FILE * archivoPretty, char*name){
           if(banderaIncludeDefine == 1){
       
               putPretty("\n", archivoPretty);
-                 
+              contadorBeamer++;    
     
             
             saltoInclude = 1;
@@ -1099,6 +1144,15 @@ int prettyprintAllman(FILE * archivoPretty, char*name){
       if (banderaNOtoken == 1){
         banderaNOtoken = 0; 
       }
+      if(contadorBeamer >= 13){
+        endListing(archivoPretty); 
+        startListing(archivoPretty); 
+        contadorBeamer = 0; 
+        if(banderaCuidadoEspacios == 1){
+          generadorEspacios(contador, archivoPretty); 
+        }
+      }
+      banderaCuidadoEspacios = 0;
       redireccionarAllman(archivoPretty);
       if(banderaNOtoken == 0){
         anterior = ntoken; /*guardo el anterior porque me ayuda a verificar ciertas cosas*/
