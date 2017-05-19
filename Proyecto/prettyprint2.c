@@ -46,7 +46,7 @@ void stepsBeamer(int value, FILE * archivoPretty, char*name){
   prettyprintSelect(value, archivoPretty, name); 
   endListing(archivoPretty); 
   endBeamer(archivoPretty); 
-  printf("thanks lord\n");
+
 }
 
 
@@ -418,7 +418,7 @@ int prettyprintGNU(FILE * archivoPretty, char*name){
         
           
       }
-      printf("contadorBeamer = %d\n", contadorBeamer);
+      
       if (banderaNOtoken == 1){
         banderaNOtoken = 0; 
       }
@@ -571,14 +571,19 @@ void tokenCondicionalesBSD(FILE * archivoPretty){
           putPretty(yytext, archivoPretty);  
                  
           putPretty("\n", archivoPretty); 
+          contadorBeamer++;
+
           banderaDo = 0; 
         }
         else{
       
           putPretty("\n", archivoPretty); 
+          contadorBeamer++;
+          
           contador = contador + 8 ;
           if(ntoken != FOR && ntoken != IF && ntoken != WHILE && ntoken != DO && ntoken != ELSE && ntoken != SWITCH){
             generadorEspacios(contador, archivoPretty);
+            banderaCuidadoEspacios = 1; 
           }
           
           tramposos[iActual] = tramposos[iActual] + 1; 
@@ -621,6 +626,8 @@ void tokenCaseBSD(FILE * archivoPretty){
         contador = contador + 8; 
         banderaNOtoken =1 ;
         putPretty("\n", archivoPretty); 
+        contadorBeamer++;
+          
        
       }  
       
@@ -650,7 +657,8 @@ void tokenLeftBracketBSD(FILE * archivoPretty, int tipo){
       contador = contador - 2 ;
       putPretty(yytext, archivoPretty); /*Se coloca la llave que abre*/ 
       putPretty("\n", archivoPretty); /*Se coloca un salto de línea*/
-      
+      contadorBeamer++;
+          
       contador = contador + 8;  /*Se suman otros dos espacios para que ya el resto bn identado*/
       
       banderaNOtoken = 1; 
@@ -658,6 +666,7 @@ void tokenLeftBracketBSD(FILE * archivoPretty, int tipo){
       ntoken = nextToken(); 
       if(ntoken != RIGHT_BRACKET)
         generadorEspacios(contador, archivoPretty); /*espacios*/ 
+        banderaCuidadoEspacios = 1; 
 }
 
 void tokenLeftParenthesisBSD(FILE * archivoPretty){
@@ -676,7 +685,8 @@ void tokenRightBracketBSD(FILE * archivoPretty){
       if(anterior != SEMICOLON && anterior != RIGHT_BRACKET){ 
         // si el anterior no es ; ni } indica que debe haber un salto de linea 
         putPretty("\n", archivoPretty); 
-        
+        contadorBeamer++;
+          
       }
       if(banderaCase >= 1){
         caseRBracket++; 
@@ -707,7 +717,8 @@ void tokenRightBracketBSD(FILE * archivoPretty){
       banderaNOtoken = 1; 
       if(ntoken != SEMICOLON){
         putPretty("\n", archivoPretty); /* salto de linea */
-        
+        contadorBeamer++;
+          
       }
       //si es diferente de SEMICOLON si salta y este if lo hice por el caso struct {} ; 
 
@@ -727,6 +738,7 @@ void tokenColonsBSD(FILE * archivoPretty, FILE * archivo){
         //  generadorEspacios(2, archivoPretty);
         //  putPretty(yytext, archivoPretty);
         //  putPretty("\n", archivoPretty); 
+        //  contadorBeamer++;
         //  contador = contador + 8; 
           //anterior = SEMICOLON;
 
@@ -735,7 +747,7 @@ void tokenColonsBSD(FILE * archivoPretty, FILE * archivo){
 
         //else{   
           putPretty("\n", archivoPretty);
-          
+          contadorBeamer++;
           
         //  generadorEspacios(contador, archivoPretty);
         //  anterior = SEMICOLON;
@@ -780,7 +792,8 @@ int prettyprintBSD(FILE * archivoPretty, char*name){
           if(banderaIncludeDefine == 1){
       
               putPretty("\n", archivoPretty);
-                 
+              contadorBeamer++;
+             
     
             
             saltoInclude = 1;
@@ -799,6 +812,15 @@ int prettyprintBSD(FILE * archivoPretty, char*name){
       if (banderaNOtoken == 1){
         banderaNOtoken = 0; 
       }
+      if(contadorBeamer >= 13){
+        endListing(archivoPretty); 
+        startListing(archivoPretty); 
+        contadorBeamer = 0; 
+        if(banderaCuidadoEspacios == 1){
+          generadorEspacios(contador, archivoPretty); 
+        }
+      }
+      banderaCuidadoEspacios = 0;
       redireccionarBSD(archivoPretty);
       if(banderaNOtoken == 0){
         anterior = ntoken; /*guardo el anterior porque me ayuda a verificar ciertas cosas*/

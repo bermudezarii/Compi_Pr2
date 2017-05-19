@@ -49,108 +49,94 @@
  jaajaj\end{frame}\begin{frame}[fragile]
 \frametitle{C\'odigo Analizado}
 \begin{lstlisting}[style=CStyle]
-char * lie;
-double time, me = !0XFACE, not;
-int rested, get, out;
-main (ly, die)char ly, * * die;
-
-{
-    signed char lotte, dear;
-    (char)lotte --;
-    for (get = !me ; ; not)
-    {
-        1 - out &out;
-        lie;
-
-        {
-            \end{lstlisting}
-\end{frame}
-\begin{frame}[fragile]
-\frametitle{C\'odigo Analizado}
-\begin{lstlisting}[style=CStyle]
-            char lotte, my = dear, * * let = !!me * !not + ++ die;
-            (char *) (lie = "The gloves are OFF this time, I detest you, snot\n\0sed GEEK!");
-            do
-            {
-                not = * lie ++ &0xF00L * !me;
-                (char *)lie - 1 * ! (not = atoi (let[get - me ? (char)lotte - (char)lotte :my - * (char *)lie - - 'I' - * (char *)lie - - 'U' - 'I' - (long)- 4 - 'U'])- !! (time = out = 'a'));
-            }
-            while (my - dear && 'I' - 1l - get - 'a');
-            break;
-        }
-    }
-    (char)* lie ++;
-    (char)* lie ++, (char)* lie ++;
+char*lie;
+doubletime,me=!0XFACE,not;
+intrested,get,out;
+main (ly,die)charly,**die;  {
+        signedcharlotte,dear;
+        (char)lotte--;
+        for (get=!me;;not)  {
+                1-out&out;
+                lie;  {
+                        charlotte,my=dear,**let=!!me*!not+++die;
+                        (char*) (lie="The gloves are OFF this time, I detest you, snot\n\0sed GEEK!");
 \end{lstlisting}
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{C\'odigo Analizado}
 \begin{lstlisting}[style=CStyle]
-    hell :0, (char)* lie;
-    get * out * (short)ly - 0 - 'R' - get - 'a' ^ rested;
-    do
-    {
-        auto * eroticism, that;
-        puts (* (out - 'c' - ('P' - 'S')+ die + - 2));
-    }
-    while (!"you're at it");
-    for (* ((char *)&lotte)^= (char)lotte ; ((char *)lie - ly)[ (char)++ lotte + !!0xBABE] ;)
-    {
-        if ('I' - lie[2 + (char)lotte])
-        {
-            'I' - 1l * * * die;
+                        do  {
+                                not=*lie++&0xF00L*!me;
+                                (char*)lie-1*! (not=atoi (let[get-me? (char)lotte- (char)lotte:my-* (char*)lie--'I'-* (char*)lie--'U'-'I'- (long)-4-'U'])-!! (time=out='a'));
+                        }
+                        while (my-dear&&'I'-1l-get-'a');
+                        break;
+                }
+        }
+        (char)*lie++;
+        (char)*lie++, (char)*lie++;
+        hell:0, (char)*lie;
+        get*out* (short)ly-0-'R'-get-'a'^rested;
+        do  {
+                \end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{C\'odigo Analizado}
+\begin{lstlisting}[style=CStyle]
+                auto*eroticism,that;
+                puts (* (out-'c'- ('P'-'S')+die+-2));
+        }
+        while (!"you're at it");
+        for (* ((char*)&lotte)^= (char)lotte; ((char*)lie-ly)[ (char)++lotte+!!0xBABE];)  {
+                if ('I'-lie[2+ (char)lotte])  {
+                        'I'-1l***die;
+                }
+                else  {
+                        if ('I'*get*out* ('I'-1l**die[2]))
+                                *((char*)&lotte)-='4'-('I'-1l);
+                        not;
+                        for (get=!get;!out; (char)*lie&0xD0-!not)
+                                \end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{C\'odigo Analizado}
+\begin{lstlisting}[style=CStyle]
+                                return!!(char)lotte;
+                }
+                (char)lotte;
+                do  {
+                        not*putchar (lie[out*!not*!!me+ (char)lotte]);
+                        not;
+                        for (;!'a';)
+                                ;
+                }
+                while ((char*)lie- (char*)lie);  {
+                        registerthis;
+                        switch ((char)lie[ (char)lotte]-1*!out)  {
+                                \end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{C\'odigo Analizado}
+\begin{lstlisting}[style=CStyle]
+                                char*les,get=0xFF,my;
+                                case' ':
+                                        * ((char*)&lotte)+=15;
+                                        !not+ (char)*lie*'s';
+                                        this+1+not;
+                                default:
+                                        0xF+ (char*)lie;
+                        }
+                }
+        }
+        get-!out;
+        if (not--)
+                gotohell;
 \end{lstlisting}
 \end{frame}
 \begin{frame}[fragile]
 \frametitle{C\'odigo Analizado}
 \begin{lstlisting}[style=CStyle]
-        }
-        else
-        {
-            if ('I' * get * out * ('I' - 1l * * die[2]))
-                *((char *)&lotte)-= '4' -('I' - 1l);
-            not;
-            for (get = !get ; !out ; (char)* lie &0xD0 - !not)
-                return !!(char)lotte;
-        }
-        (char)lotte;
-        do
-        {
-            not * putchar (lie[out * !not * !!me + (char)lotte]);
-\end{lstlisting}
-\end{frame}
-\begin{frame}[fragile]
-\frametitle{C\'odigo Analizado}
-\begin{lstlisting}[style=CStyle]
-            not;
-            for (; !'a' ;)
-                ;
-        }
-        while ((char *)lie - (char *)lie);
-
-        {
-            register this;
-            switch ((char)lie[ (char)lotte] - 1 * !out)
-            {
-                char * les, get = 0xFF, my;
-                case ' ':
-                    * ((char *)&lotte)+= 15;
-\end{lstlisting}
-\end{frame}
-\begin{frame}[fragile]
-\frametitle{C\'odigo Analizado}
-\begin{lstlisting}[style=CStyle]
-                    !not + (char)* lie * 's';
-                    this + 1 + not;
-                default:
-                    0xF + (char *)lie;
-            }
-        }
-    }
-    get - !out;
-    if (not --)
-        goto hell;
-    exit ((char)lotte);
+        exit ((char)lotte);
 }
 \end{lstlisting}
 \end{frame}
